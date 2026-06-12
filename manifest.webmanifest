@@ -1,0 +1,41 @@
+{
+  "name": "Area Mapping - Bank Mandiri A Yani",
+  "short_name": "A Yani Map",
+  "description": "Networking & area mapping tool untuk Bank Mandiri cabang A Yani. CRUD pin lokasi, filter kategori/produk/kota, integrasi Google Sheets & Drive.",
+  "start_url": "/",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "background_color": "#f0f4f8",
+  "theme_color": "#003D79",
+  "lang": "id",
+  "scope": "/",
+  "icons": [
+    {
+      "src": "/assets/icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/assets/icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/assets/icons/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    }
+  ],
+  "categories": ["business", "productivity", "utilities"],
+  "shortcuts": [
+    {
+      "name": "Tambah Pin",
+      "short_name": "Tambah",
+      "description": "Tambah pin lokasi baru",
+      "url": "/?action=add"
+    }
+  ]
+}

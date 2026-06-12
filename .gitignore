@@ -1,0 +1,41 @@
+# OS / editor noise
+.DS_Store
+Thumbs.db
+desktop.ini
+*.swp
+*.swo
+*~
+.vscode/
+.idea/
+*.iml
+
+# Node (in case future builds)
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
+
+# Vercel
+.vercel/
+
+# Env files (API keys, etc.)
+.env
+.env.local
+.env.*.local
+
+# OS-generated backup files
+*.bak
+*.tmp
+*.orig
+
+# Test files
+*.test.js
+*.spec.js
+__tests__/
+coverage/
+
+# Build output
+dist/
+build/
+*.tsbuildinfo

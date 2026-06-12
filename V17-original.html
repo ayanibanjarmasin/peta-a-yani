@@ -1,0 +1,1707 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="format-detection" content="telephone=no">
+<meta name="theme-color" content="#003D79" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#060d1a" media="(prefers-color-scheme: dark)">
+<title>Area Mapping - A Yani (Bank Mandiri)</title>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+<style>
+  /* ============================================================
+     ULTRA MODERN 2026 DESIGN SYSTEM
+     Primary: Deep Navy #003D79 (R0 G61 B121)
+     Accent:  Gold    #FFB700 (R255 G183 B0)
+     Style: Glassmorphism, premium micro-interactions, 2026 aesthetic
+     ============================================================ */
+  :root {
+    --brand-primary: #003D79;
+    --brand-primary-light: #004f9e;
+    --brand-primary-dark: #002a55;
+    --brand-blue: #003D79;
+    --brand-accent: #FFB700;
+    --brand-accent-light: #ffc933;
+    --brand-accent-dark: #e6a500;
+    --bg: #f0f4f8;
+    --surface: #ffffff;
+    --surface-2: #f5f8fc;
+    --surface-3: #e4eaf3;
+    --border: #dde4ef;
+    --border-strong: #c5d0e0;
+    --text: #0d1b2e;
+    --text-2: #3d5068;
+    --text-3: #8fa3b8;
+    --success: #00b87a;
+    --success-bg: #d0f5e8;
+    --danger: #f03e5e;
+    --danger-bg: #fde8ec;
+    --warning: #FFB700;
+    --warning-bg: #fff4cc;
+    --info: #003D79;
+    --info-bg: #e0eaf5;
+    --shadow-xs: 0 1px 3px rgba(0,61,121,0.06);
+    --shadow-sm: 0 2px 8px rgba(0,61,121,0.08);
+    --shadow-md: 0 4px 20px rgba(0,61,121,0.10);
+    --shadow-lg: 0 12px 48px rgba(0,61,121,0.15);
+    --shadow-glow: 0 0 0 3px rgba(0,61,121,0.18);
+    --shadow-gold: 0 0 0 3px rgba(255,183,0,0.28);
+    --ease: cubic-bezier(0.4, 0, 0.2, 1);
+    --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+    --t-fast: 0.15s;
+    --t-med: 0.25s;
+  }
+
+  *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+  /* Prevent double-tap zoom on map controls & quick taps; allow pinch on map itself */
+  .sidebar-tabs button,.cat-item,.btn,.zoom-btn,.topbar-actions button,.dark-toggle,.btn-logout,.modal-close,.pin-info-actions button,.produk-row .rm,.btn-add-row,.photo-slot,.sidebar-head .btn,.lightbox-nav,.lightbox-close,.toggle-sidebar{ touch-action: manipulation; }
+  /* Pastikan map bisa pinch-zoom (Leaflet default, tapi explicit supaya tidak override) */
+  #map,.leaflet-container{ touch-action: pan-x pan-y pinch-zoom; }
+  /* Body tetap no-scroll karena full-height layout */
+  html,body{height:100%;overflow:hidden;overscroll-behavior:none}
+
+  /* Smooth scroll di area yang bisa di-scroll (sidebar, modal body) */
+  .sidebar-content,.modal-body,.pin-photos,.catatan-box{ -webkit-overflow-scrolling: touch; }
+  body{font-family:-apple-system,BlinkMacSystemFont,"Inter","Segoe UI",Roboto,sans-serif;background:var(--bg);color:var(--text);display:flex;flex-direction:column;font-feature-settings:"cv11","ss01";-webkit-font-smoothing:antialiased}
+
+  ::-webkit-scrollbar{width:6px;height:6px}
+  ::-webkit-scrollbar-track{background:transparent}
+  ::-webkit-scrollbar-thumb{background:rgba(0,61,121,0.2);border-radius:3px}
+  ::-webkit-scrollbar-thumb:hover{background:rgba(0,61,121,0.4)}
+
+  /* TOP BAR */
+  .topbar{background:linear-gradient(135deg,var(--brand-primary-dark) 0%,var(--brand-primary) 55%,var(--brand-primary-light) 100%);color:#fff;padding:12px 20px;padding-top:max(12px, env(safe-area-inset-top));padding-left:max(20px, env(safe-area-inset-left));padding-right:max(20px, env(safe-area-inset-right));box-shadow:0 2px 24px rgba(0,61,121,0.35),0 1px 0 rgba(255,183,0,0.25) inset;z-index:20;flex-shrink:0;display:flex;align-items:center;gap:12px;position:relative;overflow:hidden}
+  .topbar::before{content:"";position:absolute;top:0;right:0;width:280px;height:100%;background:radial-gradient(ellipse at top right,rgba(255,183,0,0.18) 0%,transparent 70%);pointer-events:none}
+  .topbar::after{content:"";position:absolute;bottom:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(255,183,0,0.45),transparent)}
+  .topbar h1{font-size:14px;font-weight:700;flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;letter-spacing:-0.02em;position:relative}
+  .topbar h1 .logo{width:28px;height:28px;background:linear-gradient(135deg,var(--brand-accent-dark),var(--brand-accent-light));border-radius:9px;display:inline-flex;align-items:center;justify-content:center;font-size:14px;font-weight:900;color:var(--brand-primary);margin-right:9px;vertical-align:middle;box-shadow:0 3px 10px rgba(255,183,0,0.55),0 1px 0 rgba(255,255,255,0.3) inset;letter-spacing:0}
+  .topbar .sub{font-size:10px;opacity:.75;display:block;margin-top:1px;font-weight:400;letter-spacing:0.03em}
+  .topbar-actions{display:flex;gap:6px;align-items:center;position:relative}
+  .topbar-actions button{background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.12);color:#fff;width:44px;height:44px;border-radius:12px;cursor:pointer;font-size:16px;display:flex;align-items:center;justify-content:center;transition:all var(--t-fast) var(--ease);backdrop-filter:blur(8px);touch-action:manipulation}
+  .topbar-actions button:hover{background:rgba(255,183,0,.2);border-color:rgba(255,183,0,.4);transform:translateY(-1px);box-shadow:0 4px 12px rgba(0,0,0,.2)}
+  .topbar-actions button:active{transform:translateY(0)}
+  .topbar-actions button.has-pending{background:var(--brand-accent);border-color:var(--brand-accent-dark);color:var(--brand-primary);animation:pulse 1.5s infinite;font-weight:700}
+  @keyframes pulse{0%,100%{transform:scale(1);box-shadow:0 0 0 0 rgba(255,183,0,0.5)}50%{transform:scale(1.08);box-shadow:0 0 0 8px rgba(255,183,0,0)}}
+
+  /* TOOLBAR */
+  .toolbar{background:rgba(255,255,255,0.93);padding:10px 14px;display:flex;gap:8px;align-items:center;border-bottom:1px solid var(--border);flex-shrink:0;flex-wrap:wrap;backdrop-filter:saturate(180%) blur(12px);-webkit-backdrop-filter:saturate(180%) blur(12px);box-shadow:0 1px 0 rgba(0,61,121,0.05)}
+  .search-box{flex:1;min-width:140px;position:relative}
+  .search-box input{width:100%;padding:14px 14px 14px 42px;border:1.5px solid var(--border);border-radius:24px;font-size:16px;background:var(--surface-2);transition:all var(--t-fast) var(--ease);color:var(--text);font-weight:500}
+  .search-box input::placeholder{color:var(--text-3)}
+  .search-box input:focus{outline:none;border-color:var(--brand-primary);background:#fff;box-shadow:var(--shadow-glow)}
+  .search-box::before{content:"\1F50D";position:absolute;left:14px;top:50%;transform:translateY(-50%);font-size:16px;pointer-events:none;opacity:.5}
+
+  /* Buttons */
+  .btn{padding:12px 16px;border:1px solid transparent;border-radius:12px;font-size:13px;font-weight:700;cursor:pointer;display:flex;align-items:center;gap:6px;transition:all var(--t-fast) var(--ease);white-space:nowrap;letter-spacing:0.01em;touch-action:manipulation;min-height:44px}
+  .btn:hover{transform:translateY(-1px);box-shadow:var(--shadow-sm)}
+  .btn:active{transform:translateY(0)}
+  .btn-primary{background:linear-gradient(135deg,var(--brand-primary),var(--brand-primary-light));color:#fff;box-shadow:0 2px 8px rgba(0,61,121,0.3)}
+  .btn-primary:hover{box-shadow:0 4px 16px rgba(0,61,121,0.4)}
+  .btn-ghost{background:var(--surface-2);color:var(--text-2);border-color:var(--border)}
+  .btn-ghost:hover{background:var(--surface-3);color:var(--text)}
+  .btn-add{background:linear-gradient(135deg,var(--brand-accent-dark),var(--brand-accent));color:var(--brand-primary);box-shadow:0 2px 8px rgba(255,183,0,0.35);font-weight:800}
+  .btn-add:hover{box-shadow:0 4px 16px rgba(255,183,0,0.5)}
+  .btn-danger{background:linear-gradient(135deg,#c0304e,var(--danger));color:#fff;box-shadow:0 2px 6px rgba(240,62,94,0.25)}
+  .btn-danger:hover{box-shadow:0 4px 12px rgba(240,62,94,0.4)}
+
+  /* LAYOUT */
+  .main{flex:1;display:flex;overflow:hidden;position:relative}
+  .sidebar{width:285px;max-width:85vw;background:rgba(255,255,255,0.96);border-right:1px solid var(--border);display:flex;flex-direction:column;flex-shrink:0;transition:transform var(--t-med) var(--ease);z-index:5;backdrop-filter:saturate(180%) blur(12px);-webkit-backdrop-filter:saturate(180%) blur(12px)}
+  .sidebar.hidden{transform:translateX(-100%);position:absolute;height:100%;box-shadow:var(--shadow-lg);max-width:85vw}
+  .sidebar-backdrop{position:absolute;inset:0;background:rgba(0,29,61,0.4);opacity:0;pointer-events:none;transition:opacity var(--t-med) var(--ease);z-index:4;backdrop-filter:blur(2px);-webkit-backdrop-filter:blur(2px);display:none}
+  .sidebar-backdrop.show{opacity:1;pointer-events:auto;display:block}
+  .sidebar-head{padding:12px 16px;background:linear-gradient(135deg,var(--brand-primary-dark) 0%,var(--brand-primary) 100%);display:flex;justify-content:space-between;align-items:center}
+  .sidebar-head h2{font-size:11px;font-weight:800;color:#fff;letter-spacing:0.06em;text-transform:uppercase}
+  .sidebar-head .btn{background:rgba(255,255,255,.15);color:#fff;border-color:rgba(255,255,255,.15);padding:3px 9px;font-size:10px;border-radius:8px}
+  .sidebar-head .btn:hover{background:rgba(255,183,0,.3);border-color:rgba(255,183,0,.4)}
+  .sidebar-tabs{display:flex;background:var(--surface-2);padding:6px 8px 0;gap:2px;border-bottom:1px solid var(--border)}
+  .sidebar-tabs button{flex:1;padding:12px 4px;border:none;background:transparent;font-size:11px;font-weight:700;color:var(--text-3);cursor:pointer;border-radius:8px 8px 0 0;transition:all var(--t-fast) var(--ease);position:relative;letter-spacing:0.03em;text-transform:uppercase;touch-action:manipulation;min-height:44px}
+  .sidebar-tabs button:hover{color:var(--text-2);background:rgba(0,61,121,0.05)}
+  .sidebar-tabs button.active{color:var(--brand-primary);background:#fff;font-weight:800}
+  .sidebar-tabs button.active::after{content:"";position:absolute;bottom:-1px;left:10%;right:10%;height:2.5px;background:var(--brand-accent);border-radius:2px 2px 0 0}
+  .sidebar-content{flex:1;overflow-y:auto;padding:8px}
+
+  /* Category items */
+  .cat-item{padding:14px 16px;margin:3px 0;border-radius:14px;cursor:pointer;font-size:14px;display:flex;align-items:center;gap:12px;transition:all var(--t-fast) var(--ease);border:1px solid transparent;font-weight:500;touch-action:manipulation;min-height:48px}
+  .cat-item:hover{background:var(--info-bg);border-color:rgba(0,61,121,0.1);transform:translateX(3px)}
+  .cat-item.active{background:linear-gradient(135deg,rgba(0,61,121,0.09),rgba(0,61,121,0.04));color:var(--brand-primary);font-weight:700;border-color:rgba(0,61,121,0.18);box-shadow:var(--shadow-xs)}
+  .cat-item .cat-color{width:14px;height:14px;border-radius:50%;flex-shrink:0;box-shadow:0 0 0 2px #fff,0 0 0 3px rgba(0,0,0,0.08);transition:transform var(--t-fast) var(--ease)}
+  .cat-item:hover .cat-color{transform:scale(1.2)}
+  .cat-item .cat-name{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .cat-item .cat-count{background:var(--surface-3);color:var(--text-2);padding:4px 10px;border-radius:12px;font-size:11px;font-weight:800;flex-shrink:0;min-width:26px;text-align:center;min-height:22px;display:flex;align-items:center;justify-content:center}
+  .cat-item.active .cat-count{background:var(--brand-primary);color:#fff;box-shadow:0 2px 6px rgba(0,61,121,0.3)}
+
+  /* MAP */
+  .map-wrap{flex:1;position:relative;background:#e4eaf2}
+  #map{width:100%;height:100%;z-index:1}
+  .leaflet-container.placing{cursor:crosshair}
+  .custom-pin{width:28px;height:28px;border-radius:50%;box-shadow:0 1px 4px rgba(0,0,0,0.4);background:transparent;transition:transform 0.15s var(--ease)}
+  .custom-pin:hover{transform:scale(1.3);z-index:1000}
+  .custom-pin > div{box-shadow:0 0 0 3px #fff,0 4px 12px rgba(0,0,0,0.35);font-weight:800;color:#fff;font-size:10px;text-shadow:0 1px 2px rgba(0,0,0,0.5)}
+  .pin-dim{opacity:0.2}
+  .pin-pending-ring{border:2px dashed var(--brand-accent) !important;animation:spin 2s linear infinite}
+  @keyframes spin{to{transform:rotate(360deg)}}
+
+  /* Zoom controls */
+  .zoom-controls{position:absolute;bottom:calc(110px + env(safe-area-inset-bottom, 0px));right:16px;display:flex;flex-direction:column;gap:10px;z-index:400}
+  .zoom-btn{width:48px;height:48px;border-radius:16px;background:rgba(255,255,255,0.97);border:1px solid var(--border);box-shadow:var(--shadow-md);cursor:pointer;font-size:20px;font-weight:700;color:var(--text);display:flex;align-items:center;justify-content:center;transition:all var(--t-fast) var(--ease);backdrop-filter:blur(8px);touch-action:manipulation}
+  .zoom-btn:hover{background:#fff;transform:translateY(-2px);box-shadow:var(--shadow-lg);color:var(--brand-primary);border-color:rgba(0,61,121,0.2)}
+
+  /* Stats + mode indicator */
+  .stats{position:absolute;top:12px;left:12px;background:rgba(255,255,255,0.97);padding:10px 16px;border-radius:22px;font-size:12px;font-weight:700;box-shadow:var(--shadow-md);z-index:400;display:flex;gap:14px;align-items:center;backdrop-filter:blur(10px);border:1px solid var(--border)}
+  .stats-item{display:flex;gap:6px;align-items:center}
+  .stats-item .v{color:var(--brand-primary);font-weight:800}
+  .stats-item .v.warn{color:var(--brand-accent)}
+  .stats-item .v.err{color:var(--danger)}
+  .mode-indicator{position:absolute;top:12px;right:12px;background:rgba(255,255,255,0.97);padding:10px 16px;border-radius:22px;font-size:12px;font-weight:700;box-shadow:var(--shadow-md);z-index:400;display:flex;gap:8px;align-items:center;backdrop-filter:blur(10px);border:1px solid var(--border)}
+  .mode-indicator .dot{width:8px;height:8px;border-radius:50%;animation:dotPulse 2s ease-in-out infinite}
+  .mode-indicator.online .dot{background:var(--success);box-shadow:0 0 0 2px rgba(0,184,122,0.2)}
+  .mode-indicator.offline .dot{background:var(--brand-accent);box-shadow:0 0 0 2px rgba(255,183,0,0.2)}
+  @keyframes dotPulse{0%,100%{box-shadow:0 0 0 0 rgba(0,184,122,0.4)}50%{box-shadow:0 0 0 6px rgba(0,184,122,0)}}
+
+  /* Placement hint */
+  .placement-hint{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);background:rgba(0,29,61,0.96);color:#fff;padding:18px 26px;border-radius:18px;font-size:15px;font-weight:700;z-index:6;pointer-events:none;box-shadow:var(--shadow-lg);animation:bounce var(--t-med) var(--ease);backdrop-filter:blur(10px);border:1px solid rgba(255,183,0,0.3);max-width:90vw;text-align:center}
+  @keyframes bounce{0%{transform:translate(-50%,-30%);opacity:0}100%{transform:translate(-50%,-50%);opacity:1}}
+
+  /* MOBILE */
+  @media(max-width:768px){
+    .sidebar{position:absolute;height:100%}
+    /* Hide duplicate sidebar toggle (toolbar already has ☰ button) */
+    .toggle-sidebar{display:none!important}
+    .stats{top:60px;left:12px;font-size:11px;padding:6px 12px;gap:10px;max-width:55vw}
+    .stats-item .v{font-size:11px}
+    .mode-indicator{top:60px;right:12px;left:auto;font-size:11px;padding:6px 12px;max-width:40vw}
+    .topbar h1{font-size:13px}
+    .topbar h1 .logo{width:24px;height:24px;font-size:12px;margin-right:7px;border-radius:7px}
+    .topbar .sub{display:none}
+    .topbar-actions{gap:4px}
+    .topbar-actions button{width:40px;height:40px;border-radius:11px;font-size:15px}
+    .dark-toggle{width:36px;height:36px;border-radius:10px;font-size:14px}
+    .user-badge{font-size:10px;padding:4px 9px}
+    .btn-logout{width:30px;height:30px;font-size:12px;border-radius:8px}
+    .toolbar{padding:8px 10px;gap:6px}
+    .search-box{min-width:0}
+    .search-box input{font-size:16px;padding:12px 12px 12px 38px}
+    .toolbar .btn{padding:10px 12px;font-size:12px;min-height:44px;border-radius:11px;gap:4px}
+    /* Modal: stack .field-row on mobile so input tidak terlalu kecil */
+    .field-row{flex-direction:column;gap:0}
+    .field-row .field{flex:none;width:100%}
+    /* Modal full-screen-like on mobile (tetap max-height 90vh) */
+    .modal{max-width:100%;border-radius:18px 18px 22px 22px;max-height:92vh}
+    .modal-body{padding:16px}
+    .modal-head{padding:14px 16px}
+    .modal-head h3{font-size:14px}
+    .modal-close{width:36px;height:36px;font-size:20px;border-radius:11px}
+    .modal-actions{padding:12px 16px;flex-wrap:wrap}
+    .modal-actions .left,.modal-actions .right{width:100%;justify-content:space-between}
+    .modal-actions .left{order:2}
+    .modal-actions .right{order:1;margin-bottom:6px}
+    .modal-actions .right .btn,.modal-actions .left .btn{flex:1;justify-content:center}
+    /* Foto: 2 kolom di mobile (3 kolom jadi sempit) */
+    .photo-grid{grid-template-columns:repeat(2,1fr);gap:6px}
+    /* Sidebar: lebih sempit di mobile (max 80vw) */
+    .sidebar{width:min(285px, 82vw);max-width:82vw}
+    .sidebar.hidden{max-width:82vw}
+    .sidebar-head{padding:10px 14px}
+    .sidebar-tabs button{font-size:10px;padding:10px 4px;min-height:44px}
+    .cat-item{padding:12px 14px;font-size:13px;min-height:48px}
+    /* Pin info: jangan overflow viewport */
+    .pin-info{max-width:min(270px, 86vw);font-size:12px;padding:12px 14px}
+    .pin-info-head{font-size:13px}
+    /* Login: padding aman */
+    .login-card{padding:24px 22px;border-radius:20px}
+    .login-logo{width:64px;height:64px;font-size:32px;border-radius:18px;margin-bottom:14px}
+    .login-card h3{font-size:16px}
+    /* Stats mobile — sembunyikan label "Tampil" kalau sempit */
+    .stats-item.shown-mobile-hide{display:none}
+    /* Lightbox nav di mobile */
+    .lightbox-nav{width:44px;height:44px;font-size:24px;border-radius:13px}
+    .lightbox-prev{left:10px}
+    .lightbox-next{right:10px}
+    .lightbox-close{top:calc(12px + env(safe-area-inset-top, 0px));right:12px;width:40px;height:40px;font-size:20px}
+    /* Drop zone */
+    .drop-zone{font-size:15px;padding:20px;text-align:center}
+  }
+
+  /* SMALL SCREENS (≤480px, e.g. iPhone SE 1st gen) */
+  @media(max-width:480px){
+    .topbar{padding:8px 12px;gap:8px}
+    .topbar h1{font-size:12px;letter-spacing:-0.01em}
+    .topbar h1 .logo{width:22px;height:22px;font-size:11px;margin-right:6px}
+    .topbar-actions{gap:3px}
+    .topbar-actions button{width:36px;height:36px;font-size:14px;border-radius:10px}
+    .dark-toggle{width:32px;height:32px}
+    .user-badge{padding:3px 7px;font-size:9px}
+    .user-badge .dot{width:6px;height:6px}
+    .btn-logout{width:28px;height:28px;font-size:11px}
+    .toolbar{padding:6px 8px;gap:4px;flex-wrap:wrap}
+    .search-box{flex:1 1 100%;order:1;margin-bottom:2px}
+    .toolbar .btn{order:2;flex:1;justify-content:center;padding:9px 8px;font-size:11px;min-height:42px}
+    .toolbar .btn span.hide-tiny, .toolbar .btn .hide-tiny{display:none}
+    .stats{font-size:10px;padding:5px 10px;gap:7px;top:54px}
+    .stats-item{font-size:10px}
+    .mode-indicator{font-size:10px;padding:5px 10px;top:54px}
+    /* Sembunyikan mode text kalau sangat sempit, tetap tampilkan dot */
+    .mode-indicator .mode-text-hide-target{font-size:0;width:0;overflow:hidden;display:inline-block}
+    .zoom-controls{bottom:calc(96px + env(safe-area-inset-bottom, 0px));right:10px;gap:8px}
+    .zoom-btn{width:44px;height:44px;font-size:18px;border-radius:14px}
+    .toggle-sidebar{width:36px;height:36px}
+    .modal{border-radius:16px 16px 20px 20px}
+    .modal-body{padding:14px}
+    .field{margin-bottom:11px}
+    .field input,.field textarea,.field select{padding:11px 13px;font-size:16px;min-height:46px}
+    .login-card{padding:22px 18px;border-radius:18px}
+    .login-card input{padding:13px 15px;font-size:16px;min-height:48px}
+    .login-card .btn-login{padding:14px;font-size:15px}
+    .pin-info{max-width:90vw;left:8px!important;right:8px;font-size:11.5px}
+    .placement-hint{font-size:14px;padding:14px 20px;max-width:85vw}
+    .produk-row .rm{width:38px;height:38px}
+    .catatan-box{min-height:72px}
+  }
+
+  /* LANDSCAPE PHONE — tinggi layar terbatas */
+  @media(max-width:900px) and (orientation:landscape) and (max-height:500px){
+    .topbar{padding:6px 14px}
+    .topbar h1{font-size:12px}
+    .topbar h1 .logo{width:22px;height:22px;margin-right:6px}
+    .topbar .sub{display:none}
+    .toolbar{padding:5px 10px}
+    .toolbar .btn{padding:7px 10px;min-height:36px;font-size:11px}
+    .stats{top:50px;font-size:10px;padding:4px 10px}
+    .mode-indicator{top:50px;font-size:10px;padding:4px 10px}
+    .zoom-controls{bottom:calc(90px + env(safe-area-inset-bottom, 0px))}
+    .zoom-btn{width:40px;height:40px;font-size:17px}
+  }
+
+  @media(min-width:769px){.toggle-sidebar{display:none}}
+
+  /* MODAL */
+  .modal-bg{position:fixed;inset:0;background:rgba(0,29,61,0.6);display:none;align-items:center;justify-content:center;z-index:100;padding:16px;padding-top:calc(16px + env(safe-area-inset-top, 0px));padding-bottom:calc(16px + env(safe-area-inset-bottom, 0px));backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);animation:fadeIn var(--t-fast) var(--ease)}
+  .modal-bg.show{display:flex}
+  .modal{background:#fff;border-radius:22px;max-width:440px;width:100%;max-height:90vh;overflow:hidden;display:flex;flex-direction:column;animation:slideUp var(--t-med) var(--ease-spring);box-shadow:0 24px 80px rgba(0,61,121,0.2);border:1px solid var(--border)}
+  @keyframes slideUp{from{transform:translateY(24px) scale(0.97);opacity:0}to{transform:translateY(0) scale(1);opacity:1}}
+  .modal-head{padding:16px 20px;background:linear-gradient(135deg,var(--brand-primary-dark) 0%,var(--brand-primary) 60%,var(--brand-primary-light) 100%);color:#fff;display:flex;justify-content:space-between;align-items:center;position:relative;overflow:hidden}
+  .modal-head::before{content:"";position:absolute;top:0;right:0;width:150px;height:100%;background:radial-gradient(circle at top right,rgba(255,183,0,0.25),transparent 70%);pointer-events:none}
+  .modal-head::after{content:"";position:absolute;bottom:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(255,183,0,0.5),transparent)}
+  .modal-head h3{font-size:15px;font-weight:800;letter-spacing:-0.01em;position:relative}
+  .modal-close{background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.12);color:#fff;font-size:18px;cursor:pointer;padding:0;width:32px;height:32px;border-radius:10px;display:flex;align-items:center;justify-content:center;transition:all var(--t-fast) var(--ease)}
+  .modal-close:hover{background:rgba(240,62,94,0.85);transform:rotate(90deg)}
+  .modal-body{padding:20px;overflow-y:auto;flex:1}
+  .field{margin-bottom:13px}
+  .field label{display:block;font-size:10.5px;font-weight:800;color:var(--text-2);margin-bottom:5px;letter-spacing:0.05em;text-transform:uppercase}
+  .field input,.field textarea,.field select{width:100%;padding:12px 14px;border:1.5px solid var(--border);border-radius:12px;font-size:16px;font-family:inherit;background:#fff;transition:all var(--t-fast) var(--ease);color:var(--text);font-weight:500;min-height:44px}
+  .field input::placeholder,.field textarea::placeholder{color:var(--text-3)}
+  .field input:focus,.field textarea:focus,.field select:focus{outline:none;border-color:var(--brand-primary);box-shadow:var(--shadow-glow)}
+  /* Fix select dropdown option contrast */
+  .field select option{background:#fff;color:var(--text);}
+  .field select option:checked{background:var(--brand-primary);color:#fff;}
+  .field textarea{resize:vertical;min-height:64px}
+  .field-row{display:flex;gap:10px}
+  .field-row .field{flex:1}
+  .modal-actions{padding:14px 20px;display:flex;gap:8px;justify-content:space-between;border-top:1px solid var(--border);background:var(--surface-2)}
+  .modal-actions .right{display:flex;gap:8px}
+
+  /* Toast */
+  .toast{position:fixed;top:calc(20px + env(safe-area-inset-top, 0px));left:50%;transform:translateX(-50%);padding:11px 20px;border-radius:16px;color:#fff;font-size:12.5px;font-weight:700;z-index:200;box-shadow:var(--shadow-lg);animation:toastIn var(--t-med) var(--ease-spring);max-width:90vw;text-align:center;backdrop-filter:blur(10px);border:1px solid rgba(255,255,255,0.15)}
+  .toast.success{background:linear-gradient(135deg,#007a52,var(--success))}
+  .toast.error{background:linear-gradient(135deg,#c0304e,var(--danger))}
+  .toast.warn{background:linear-gradient(135deg,var(--brand-accent-dark),var(--brand-accent));color:var(--brand-primary)}
+  .toast.info{background:linear-gradient(135deg,var(--brand-primary-dark),var(--brand-primary))}
+  @keyframes toastIn{from{transform:translate(-50%,-24px) scale(0.94);opacity:0}to{transform:translate(-50%,0) scale(1);opacity:1}}
+
+  /* Loader */
+  .loader{position:fixed;inset:0;background:rgba(240,244,248,0.92);display:flex;align-items:center;justify-content:center;z-index:1000;flex-direction:column;gap:16px;backdrop-filter:blur(8px)}
+  .loader.hidden{display:none}
+  .spinner{width:44px;height:44px;border:3.5px solid var(--surface-3);border-top-color:var(--brand-primary);border-right-color:var(--brand-accent);border-radius:50%;animation:spin .7s linear infinite}
+
+  /* Settings */
+  .settings-section{padding:16px 20px;border-bottom:1px solid var(--border)}
+  .settings-section h4{font-size:10px;text-transform:uppercase;letter-spacing:.1em;color:var(--brand-primary);margin-bottom:12px;font-weight:800}
+  .settings-row{display:flex;justify-content:space-between;align-items:center;padding:8px 0;font-size:12.5px}
+
+  /* Pin info bubble */
+  .pin-info{position:absolute;background:rgba(255,255,255,0.99);border-radius:16px;padding:14px 16px;box-shadow:0 16px 48px rgba(0,61,121,0.18);font-size:12.5px;max-width:270px;z-index:7;pointer-events:auto;display:none;backdrop-filter:blur(10px);border:1px solid var(--border)}
+  .pin-info.show{display:block;animation:fadeIn var(--t-fast) var(--ease)}
+  @keyframes fadeIn{from{opacity:0;transform:scale(0.95) translateY(5px)}to{opacity:1;transform:scale(1) translateY(0)}}
+  .pin-info-head{font-weight:800;font-size:13.5px;margin-bottom:6px;display:flex;align-items:center;gap:8px;letter-spacing:-0.01em}
+  .pin-info-cat{font-size:10.5px;color:var(--brand-primary);background:var(--info-bg);padding:3px 9px;border-radius:7px;display:inline-block;margin-bottom:6px;font-weight:700;border:1px solid rgba(0,61,121,0.1)}
+  .pin-info-loc{font-size:11.5px;color:var(--text-2)}
+  .pin-info-actions{display:flex;gap:6px;margin-top:11px}
+  .pin-info-actions button{padding:6px 12px;border:none;border-radius:9px;font-size:11px;font-weight:700;cursor:pointer;transition:all var(--t-fast) var(--ease)}
+  .pin-info-actions .edit{background:var(--brand-primary);color:#fff;box-shadow:0 2px 6px rgba(0,61,121,0.3)}
+  .pin-info-actions .edit:hover{background:var(--brand-primary-light);transform:translateY(-1px)}
+  .pin-info-actions .del{background:var(--surface-2);color:var(--danger);border:1px solid var(--border)}
+  .pin-info-actions .del:hover{background:var(--danger-bg)}
+
+  /* Produk list */
+  .produk-list{display:flex;flex-direction:column;gap:7px;margin-bottom:7px}
+  .produk-row{display:flex;gap:6px;align-items:center}
+  .produk-row input{flex:1;padding:11px 13px;border:1.5px solid var(--border);border-radius:11px;font-size:16px;background:#fff;font-family:inherit;transition:all var(--t-fast) var(--ease);font-weight:500;min-height:44px}
+  .produk-row input:focus{outline:none;border-color:var(--brand-primary);box-shadow:var(--shadow-glow)}
+  .produk-row .rm{background:var(--surface-2);color:var(--danger);border:1px solid var(--border);border-radius:11px;width:34px;height:34px;cursor:pointer;font-size:16px;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all var(--t-fast) var(--ease)}
+  .produk-row .rm:hover{background:var(--danger);color:#fff;border-color:var(--danger)}
+  .produk-row .rm:disabled{background:var(--surface-2);color:var(--text-3);cursor:not-allowed;opacity:0.4}
+  .btn-add-row{background:var(--info-bg);color:var(--brand-primary);border:1.5px dashed rgba(0,61,121,0.3);border-radius:11px;padding:8px 14px;font-size:11.5px;font-weight:700;cursor:pointer;width:100%;transition:all var(--t-fast) var(--ease)}
+  .btn-add-row:hover{background:rgba(0,61,121,0.1);border-style:solid;transform:translateY(-1px)}
+  .catatan-box{width:100%;padding:12px 14px;border:1.5px solid var(--border);border-radius:12px;font-size:16px;font-family:inherit;resize:vertical;min-height:80px;max-height:160px;background:#fff;transition:all var(--t-fast) var(--ease);color:var(--text);line-height:1.5;font-weight:500}
+  .catatan-box:focus{outline:none;border-color:var(--brand-primary);box-shadow:var(--shadow-glow)}
+  .pin-info-prod{margin-top:7px;display:flex;flex-wrap:wrap;gap:4px}
+  .pin-info-prod .tag{background:var(--info-bg);color:var(--brand-primary);padding:3px 9px;border-radius:7px;font-size:10.5px;font-weight:700;border:1px solid rgba(0,61,121,0.1)}
+  .pin-info-prod .tag.none{background:var(--surface-2);color:var(--text-3);border-color:var(--border)}
+  .pin-info-notes{margin-top:7px;padding:7px 10px;background:var(--warning-bg);border-left:3px solid var(--brand-accent);border-radius:7px;font-size:11.5px;color:#5a4000;line-height:1.4;white-space:pre-wrap;word-break:break-word}
+
+  /* Login modal */
+  .login-card{background:#fff;border-radius:24px;max-width:340px;width:100%;padding:32px 28px;box-shadow:0 24px 80px rgba(0,61,121,0.2);animation:slideUp var(--t-med) var(--ease-spring);border:1px solid var(--border)}
+  .login-logo{width:72px;height:72px;background:linear-gradient(135deg,var(--brand-primary-dark),var(--brand-primary));border-radius:22px;display:flex;align-items:center;justify-content:center;font-size:36px;color:var(--brand-accent);font-weight:900;margin:0 auto 16px;box-shadow:0 10px 30px rgba(0,61,121,0.35);transform:rotate(-3deg);transition:transform var(--t-fast) var(--ease-spring)}
+  .login-card:hover .login-logo{transform:rotate(0deg) scale(1.05)}
+  .login-card h3{text-align:center;font-size:18px;color:var(--text);margin-bottom:4px;font-weight:800;letter-spacing:-0.02em}
+  .login-card .sub{text-align:center;font-size:12px;color:var(--text-2);margin-bottom:22px;font-weight:500}
+  .login-card input{width:100%;padding:14px 16px;border:1.5px solid var(--border);border-radius:13px;font-size:16px;margin-bottom:12px;background:var(--surface-2);transition:all var(--t-fast) var(--ease);color:var(--text);font-weight:500;min-height:48px}
+  .login-card input:focus{outline:none;border-color:var(--brand-primary);background:#fff;box-shadow:var(--shadow-glow)}
+  .login-card .btn-login{width:100%;background:linear-gradient(135deg,var(--brand-primary-dark),var(--brand-primary));color:#fff;border:none;padding:13px;border-radius:13px;font-size:14px;font-weight:800;cursor:pointer;transition:all var(--t-fast) var(--ease);box-shadow:0 4px 16px rgba(0,61,121,0.3);letter-spacing:0.02em;margin-top:4px;position:relative;overflow:hidden}
+  .login-card .btn-login::after{content:"";position:absolute;bottom:0;left:0;right:0;height:2px;background:var(--brand-accent);opacity:0.6}
+  .login-card .btn-login:hover:not(:disabled){transform:translateY(-1px);box-shadow:0 8px 24px rgba(0,61,121,0.4)}
+  .login-card .btn-login:disabled{opacity:.5;cursor:not-allowed}
+  .login-card .err{color:var(--danger);font-size:12px;text-align:center;margin-bottom:10px;min-height:14px;font-weight:700}
+  .login-card .hint{font-size:10.5px;color:var(--text-3);text-align:center;margin-top:14px;line-height:1.5}
+
+  /* User badge */
+  .user-badge{background:rgba(255,183,0,.2);color:#fff;padding:5px 11px;border-radius:9px;font-size:11px;font-weight:700;display:flex;align-items:center;gap:6px;border:1px solid rgba(255,183,0,.3)}
+  .user-badge .dot{width:7px;height:7px;border-radius:50%;background:var(--brand-accent);box-shadow:0 0 6px rgba(255,183,0,0.8);animation:dotPulse 2s ease-in-out infinite}
+  .btn-logout{background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.12);color:#fff;width:32px;height:32px;border-radius:9px;cursor:pointer;font-size:13px;display:flex;align-items:center;justify-content:center;transition:all var(--t-fast) var(--ease)}
+  .btn-logout:hover{background:var(--danger);border-color:var(--danger)}
+
+  /* Photo upload */
+  .photo-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:8px}
+  .photo-slot{aspect-ratio:1;border:2px dashed var(--border);border-radius:13px;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden;background:var(--surface-2);cursor:pointer;transition:all var(--t-fast) var(--ease)}
+  .photo-slot:hover{border-color:var(--brand-primary);background:var(--info-bg);transform:translateY(-2px)}
+  .photo-slot.has-photo{border-style:solid;border-color:transparent;cursor:default;box-shadow:var(--shadow-sm)}
+  .photo-slot input[type=file]{position:absolute;inset:0;opacity:0;cursor:pointer}
+  .photo-slot.has-photo input[type=file]{display:none}
+  .photo-slot img{width:100%;height:100%;object-fit:cover;display:block}
+  .photo-slot .rm{position:absolute;top:4px;right:4px;background:rgba(0,29,61,0.8);color:#fff;border:none;width:24px;height:24px;border-radius:50%;cursor:pointer;font-size:14px;display:flex;align-items:center;justify-content:center;backdrop-filter:blur(4px);transition:all var(--t-fast) var(--ease)}
+  .photo-slot .rm:hover{background:var(--danger);transform:scale(1.1)}
+  .photo-slot .placeholder{color:var(--text-3);font-size:24px}
+  .photo-slot.uploading{opacity:.6;pointer-events:none}
+  .photo-slot.uploading::after{content:"⏳";position:absolute;font-size:20px}
+  .photo-counter{font-size:10.5px;color:var(--text-2);text-align:right;margin-top:3px;font-weight:700}
+
+  /* Photo carousel */
+  .pin-photos{margin-top:8px;display:flex;gap:5px;overflow-x:auto;padding-bottom:5px;scroll-snap-type:x mandatory}
+  .pin-photos::-webkit-scrollbar{height:4px}
+  .pin-photos::-webkit-scrollbar-thumb{background:rgba(0,61,121,0.2);border-radius:2px}
+  .pin-photos a{flex:0 0 88px;height:66px;border-radius:9px;overflow:hidden;border:1px solid var(--border);display:block;scroll-snap-align:start;transition:transform var(--t-fast) var(--ease)}
+  .pin-photos a:hover{transform:scale(1.06)}
+  .pin-photos img{width:100%;height:100%;object-fit:cover;display:block}
+
+  /* Lightbox */
+  .lightbox-bg{position:fixed;inset:0;background:rgba(0,15,35,0.97);display:none;align-items:center;justify-content:center;z-index:1000;backdrop-filter:blur(8px)}
+  .lightbox-bg.show{display:flex;animation:fadeIn var(--t-fast) var(--ease)}
+  .lightbox-img{max-width:90vw;max-height:85vh;object-fit:contain;border-radius:12px;box-shadow:0 24px 80px rgba(0,0,0,0.6)}
+  .lightbox-close{position:absolute;top:20px;right:20px;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.12);color:#fff;width:46px;height:46px;border-radius:15px;font-size:24px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all var(--t-fast) var(--ease);backdrop-filter:blur(8px)}
+  .lightbox-close:hover{background:var(--danger);border-color:var(--danger);transform:rotate(90deg) scale(1.1)}
+  .lightbox-nav{position:absolute;top:50%;transform:translateY(-50%);background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.12);color:#fff;width:54px;height:54px;border-radius:15px;font-size:30px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all var(--t-fast) var(--ease);backdrop-filter:blur(8px)}
+  .lightbox-nav:hover{background:rgba(255,183,0,.2);border-color:rgba(255,183,0,.4);transform:translateY(-50%) scale(1.1)}
+  .lightbox-prev{left:20px}
+  .lightbox-next{right:20px}
+  .lightbox-counter{position:absolute;bottom:24px;left:50%;transform:translateX(-50%);color:#fff;font-size:13px;font-weight:700;background:rgba(0,29,61,0.75);padding:7px 16px;border-radius:16px;backdrop-filter:blur(8px);border:1px solid rgba(255,183,0,0.2)}
+
+  /* DARK MODE */
+  body.dark-mode{background:#060d1a;color:#e2e8f0}
+  body.dark-mode .toolbar{background:rgba(6,13,26,0.85);border-bottom-color:rgba(255,255,255,0.05)}
+  body.dark-mode .search-box input{background:rgba(0,61,121,0.15);color:#e2e8f0;border-color:rgba(255,255,255,0.08)}
+  body.dark-mode .search-box input:focus{background:rgba(0,61,121,0.25);border-color:var(--brand-accent);box-shadow:var(--shadow-gold)}
+  body.dark-mode .btn-ghost{background:rgba(255,255,255,0.05);color:#cbd5e1;border-color:rgba(255,255,255,0.08)}
+  body.dark-mode .btn-ghost:hover{background:rgba(255,255,255,0.1);color:#e2e8f0}
+  body.dark-mode .sidebar{background:rgba(6,13,26,0.92);border-right-color:rgba(255,255,255,0.05)}
+  body.dark-mode .sidebar-head{background:linear-gradient(135deg,#001a3d,var(--brand-primary-dark))}
+  body.dark-mode .sidebar-tabs{background:rgba(0,0,0,0.3);border-bottom-color:rgba(255,255,255,0.05)}
+  body.dark-mode .sidebar-tabs button{color:#4a6080}
+  body.dark-mode .sidebar-tabs button:hover{color:#8fa3b8;background:rgba(0,61,121,0.1)}
+  body.dark-mode .sidebar-tabs button.active{color:var(--brand-accent);background:rgba(6,13,26,0.8)}
+  body.dark-mode .cat-item{color:#cbd5e1}
+  body.dark-mode .cat-item:hover{background:rgba(0,61,121,0.15);border-color:rgba(0,61,121,0.2)}
+  body.dark-mode .cat-item.active{background:linear-gradient(135deg,rgba(0,61,121,0.25),rgba(0,61,121,0.12));color:var(--brand-accent);border-color:rgba(255,183,0,0.2)}
+  body.dark-mode .cat-item .cat-color{box-shadow:0 0 0 2px rgba(6,13,26,0.9),0 0 0 3px rgba(255,255,255,0.05)}
+  body.dark-mode .cat-item .cat-count{background:rgba(255,255,255,0.08);color:#8fa3b8}
+  body.dark-mode .cat-item.active .cat-count{background:var(--brand-accent);color:var(--brand-primary)}
+  body.dark-mode .modal{background:#0a1628;color:#e2e8f0;border-color:rgba(255,255,255,0.08)}
+  body.dark-mode .modal-actions{background:rgba(6,13,26,0.6);border-top-color:rgba(255,255,255,0.05)}
+  body.dark-mode .field label{color:#8fa3b8}
+  body.dark-mode .field input,body.dark-mode .field select,body.dark-mode .field textarea{background:rgba(0,61,121,0.12);color:#e2e8f0;border-color:rgba(255,255,255,0.08)}
+  body.dark-mode .field input:focus,body.dark-mode .field select:focus,body.dark-mode .field textarea:focus{background:rgba(0,61,121,0.2);border-color:var(--brand-accent);box-shadow:var(--shadow-gold)}
+  /* Dark mode select options */
+  body.dark-mode .field select option{background:#0a1628;color:#e2e8f0;}
+  body.dark-mode .field select option:checked{background:var(--brand-primary);color:#fff;}
+  body.dark-mode .catatan-box{background:rgba(0,61,121,0.12);color:#e2e8f0;border-color:rgba(255,255,255,0.08)}
+  body.dark-mode .produk-row input{background:rgba(0,61,121,0.12);color:#e2e8f0;border-color:rgba(255,255,255,0.08)}
+  body.dark-mode .btn-add-row{background:rgba(255,183,0,0.1);color:var(--brand-accent);border-color:rgba(255,183,0,0.3)}
+  body.dark-mode .btn-add-row:hover{background:rgba(255,183,0,0.2)}
+  body.dark-mode .photo-slot{background:rgba(0,61,121,0.12);border-color:rgba(255,255,255,0.08)}
+  body.dark-mode .photo-slot:hover{background:rgba(0,61,121,0.2);border-color:rgba(255,183,0,0.3)}
+  body.dark-mode .photo-counter{color:#8fa3b8}
+  body.dark-mode .pin-info{background:rgba(6,13,26,0.97);color:#e2e8f0;box-shadow:0 16px 48px rgba(0,0,0,0.7);border-color:rgba(255,255,255,0.08)}
+  body.dark-mode .pin-info-cat{background:rgba(0,61,121,0.3);color:var(--brand-accent);border-color:rgba(255,183,0,0.2)}
+  body.dark-mode .pin-info-loc{color:#8fa3b8}
+  body.dark-mode .pin-info-prod .tag{background:rgba(0,61,121,0.25);color:var(--brand-accent);border-color:rgba(255,183,0,0.15)}
+  body.dark-mode .pin-info-prod .tag.none{background:rgba(255,255,255,0.05);color:#4a6080;border-color:rgba(255,255,255,0.06)}
+  body.dark-mode .pin-info-actions .del{background:rgba(255,255,255,0.05);color:#fb7185;border-color:rgba(255,255,255,0.08)}
+  body.dark-mode .pin-info-actions .del:hover{background:rgba(240,62,94,0.2)}
+  body.dark-mode .pin-info-notes{background:rgba(255,183,0,0.12);color:#fcd34d;border-left-color:var(--brand-accent)}
+  body.dark-mode .pin-photos a{border-color:rgba(255,255,255,0.08)}
+  body.dark-mode .login-card{background:#0a1628;color:#e2e8f0;border-color:rgba(255,255,255,0.08)}
+  body.dark-mode .login-card h3{color:#e2e8f0}
+  body.dark-mode .login-card .sub{color:#8fa3b8}
+  body.dark-mode .login-card input{background:rgba(0,61,121,0.15);color:#e2e8f0;border-color:rgba(255,255,255,0.08)}
+  body.dark-mode .login-card input:focus{background:rgba(0,61,121,0.25);border-color:var(--brand-accent);box-shadow:var(--shadow-gold)}
+  body.dark-mode .login-card .hint{color:#4a6080}
+  body.dark-mode .stats{background:rgba(6,13,26,0.9);color:#e2e8f0;border-color:rgba(255,255,255,0.08)}
+  body.dark-mode .stats-item .v{color:var(--brand-accent)}
+  body.dark-mode .zoom-btn{background:rgba(6,13,26,0.9);color:#e2e8f0;border-color:rgba(255,255,255,0.08)}
+  body.dark-mode .zoom-btn:hover{background:rgba(6,13,26,0.97);color:var(--brand-accent)}
+  body.dark-mode .settings-section{border-bottom-color:rgba(255,255,255,0.05)}
+  body.dark-mode .settings-section h4{color:var(--brand-accent)}
+  body.dark-mode #cfg-api,body.dark-mode #cfg-sheet{background:rgba(0,61,121,0.15);color:#e2e8f0;border-color:rgba(255,255,255,0.08)}
+  body.dark-mode .leaflet-popup-content-wrapper,body.dark-mode .leaflet-popup-tip{background:#0a1628;color:#e2e8f0}
+  body.dark-mode .produk-row .rm{background:rgba(255,255,255,0.05);color:#fb7185;border-color:rgba(255,255,255,0.08)}
+  body.dark-mode .produk-row .rm:hover{background:var(--danger);color:#fff;border-color:var(--danger)}
+  body.dark-mode .mode-indicator{background:rgba(6,13,26,0.9);color:#e2e8f0;border-color:rgba(255,255,255,0.08)}
+
+  /* Dark toggle */
+  .dark-toggle{background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.12);color:#fff;width:36px;height:36px;border-radius:11px;cursor:pointer;font-size:15px;display:flex;align-items:center;justify-content:center;transition:all var(--t-fast) var(--ease)}
+  .dark-toggle:hover{background:rgba(255,183,0,.2);border-color:rgba(255,183,0,.4);transform:translateY(-1px)}
+
+  /* Drop zone */
+  .drop-zone{position:fixed;inset:0;background:rgba(0,29,61,0.94);display:none;align-items:center;justify-content:center;z-index:300;color:#fff;font-size:18px;font-weight:700;backdrop-filter:blur(8px);border:3px dashed rgba(255,183,0,0.4)}
+  .drop-zone.show{display:flex;animation:fadeIn var(--t-fast) var(--ease)}
+</style>
+</head>
+<body>
+  <div class="loader" id="loader">
+    <div class="spinner"></div>
+    <div style="font-size:12px;color:var(--text-2);font-weight:600">Memuat data...</div>
+  </div>
+
+  <div class="topbar">
+    <h1>
+      <span class="logo">M</span>
+      <span>
+        Area Jaringan - Bank Mandiri KCP A Yani Banjarmasin
+        <span class="sub">📍 Jln. Ahmad Yani KM.2 No.188 RT 15 Banjarmasin 70233</span>
+      </span>
+    </h1>
+    <div class="topbar-actions">
+      <button class="dark-toggle" id="btn-dark" onclick="toggleDark()" title="Toggle dark mode">🌙</button>
+      <div class="user-badge" id="user-badge" style="display:none"><span class="dot"></span><span id="user-badge-name">user</span></div>
+      <button class="btn-logout" id="btn-logout" onclick="doLogout()" style="display:none" title="Logout">⎋</button>
+      <button id="btn-sync" onclick="syncPending()" title="Sync pending changes">↻</button>
+      <button id="btn-reload" onclick="forceReload()" title="Force reload dari server (bypass cache)">⟳</button>
+      <button onclick="openSettings()" title="Settings">⚙</button>
+    </div>
+  </div>
+
+  <div class="toolbar">
+    <div class="search-box">
+      <input type="text" id="search" placeholder="Cari nama, lokasi, kategori...">
+    </div>
+    <button class="btn btn-ghost" onclick="toggleSidebar()">☰</button>
+    <button class="btn btn-add" onclick="openAddModal()" id="btn-add" title="Tambah pin">＋<span class="hide-tiny"> Tambah</span></button>
+    <button class="btn btn-ghost" onclick="loadData(true)" title="Refresh data">⟳</button>
+  </div>
+
+  <div class="main">
+    <button class="toggle-sidebar" onclick="toggleSidebar()" aria-label="Buka sidebar">☰</button>
+    <div class="sidebar-backdrop" id="sidebar-backdrop" onclick="toggleSidebar()"></div>
+    <div class="sidebar" id="sidebar">
+      <div class="sidebar-head">
+        <h2>📂 Kategori</h2>
+        <button class="btn btn-ghost" onclick="clearFilter()" style="padding:3px 7px;font-size:10px">Reset</button>
+      </div>
+      <div class="sidebar-tabs">
+        <button class="active" data-tab="cat" onclick="switchTab('cat')">Kategori</button>
+        <button data-tab="list" onclick="switchTab('list')">Daftar (<span id="list-count">0</span>)</button>
+        <button data-tab="empty" onclick="switchTab('empty')">📍 Lokasi Kosong (<span id="empty-count">0</span>)</button>
+      </div>
+      <div class="sidebar-content" id="sidebar-content"></div>
+    </div>
+
+    <div class="map-wrap">
+      <div class="stats" id="stats">
+        <div class="stats-item">Total: <span class="v" id="stat-total">0</span></div>
+        <div class="stats-item">Tampil: <span class="v" id="stat-shown">0</span></div>
+        <div class="stats-item" id="stat-pending-wrap" style="display:none">Pending: <span class="v warn" id="stat-pending">0</span></div>
+      </div>
+      <div class="mode-indicator" id="mode-indicator">
+        <div class="dot"></div>
+        <span id="mode-text" class="mode-text-hide-target">Online</span>
+      </div>
+      <div id="map"></div>
+      <div class="zoom-controls">
+        <button class="zoom-btn" onclick="requestUserLocation(true)" id="btn-locate" title="Lokasi saya saat ini (GPS)" style="font-size:14px;background:var(--brand-accent);color:var(--brand-primary);border-color:var(--brand-accent-dark);font-weight:900">🎯</button>
+        <button class="zoom-btn" onclick="toggleClickToAdd()" id="btn-place" title="Click to add pin" style="font-size:11px;background:var(--brand-primary);color:#fff;border-color:rgba(0,61,121,0.3)">📍</button>
+      </div>
+      <div class="pin-info" id="pin-info"></div>
+    </div>
+  </div>
+
+  <!-- Add/Edit Modal -->
+  <div class="modal-bg" id="formModal">
+    <div class="modal" id="formModalBox">
+      <div class="modal-head">
+        <h3 id="form-title">➕ Tambah Pin Baru</h3>
+        <button class="modal-close" onclick="closeFormModal()">×</button>
+      </div>
+      <div class="modal-body">
+        <input type="hidden" id="form-no">
+        <div class="field">
+          <label>Nama Tempat *</label>
+          <input type="text" id="form-nama" placeholder="Contoh: Toko Sumber Rezeki">
+        </div>
+        <div class="field">
+          <label>Lokasi / Alamat</label>
+          <select id="form-lokasi">
+            <option value="">-- Pilih Lokasi --</option>
+          </select>
+        </div>
+        <div class="field">
+          <label>Kategori *</label>
+          <select id="form-kategori">
+            <option value="">-- Pilih Kategori --</option>
+          </select>
+        </div>
+        <div class="field-row">
+          <div class="field">
+            <label>Longitude (X) *</label>
+            <input type="number" id="form-lng" placeholder="106.xxx" step="any">
+          </div>
+          <div class="field">
+            <label>Latitude (Y) *</label>
+            <input type="number" id="form-lat" placeholder="-6.xxx" step="any">
+          </div>
+          <div class="field">
+            <label>Warna Pin</label>
+            <input type="color" id="form-color" value="#003D79">
+          </div>
+          <div class="field" style="display:flex;align-items:flex-end">
+            <button class="btn btn-ghost" onclick="pickOnMap()" type="button" style="padding:7px 10px;height:34px">📍 Pick</button>
+          </div>
+        </div>
+        <div style="font-size:10px;color:var(--text-2);background:var(--info-bg);padding:8px 10px;border-radius:9px;line-height:1.4;border:1px solid rgba(0,61,121,0.1);font-weight:500">
+          💡 <b>Pick</b> = klik di peta untuk set koordinat. <b>Click to add</b> mode: langsung klik di peta (toolbar 📍).
+        </div>
+        <div class="field">
+          <label>Produk <span style="font-weight:400;color:var(--text-3);font-size:10px;text-transform:none">(pilih None jika belum punya)</span></label>
+          <div class="produk-list" id="produk-list"></div>
+          <button type="button" class="btn-add-row" onclick="addProdukRow()">＋ Tambah Produk</button>
+        </div>
+        <div class="field">
+          <label>Foto <span style="font-weight:400;color:var(--text-3);font-size:10px;text-transform:none">(max 3, publik di Google Drive)</span></label>
+          <div class="photo-grid" id="photo-grid"></div>
+          <div class="photo-counter" id="photo-counter">0/3 foto</div>
+        </div>
+        <div class="field">
+          <label>Catatan / Keterangan</label>
+          <textarea id="form-catatan" class="catatan-box" placeholder="Catatan bebas, contoh: pemilik ramah, sering transaksi Rp 5jt/bln, etc."></textarea>
+        </div>
+      </div>
+      <div class="modal-actions">
+        <div class="left">
+          <button class="btn btn-danger" id="btn-delete" onclick="deletePin()" style="display:none">🗑 Hapus</button>
+        </div>
+        <div class="right">
+          <button class="btn btn-ghost" onclick="closeFormModal()">Batal</button>
+          <button class="btn btn-primary" onclick="savePin()" id="btn-save">💾 Simpan</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Login Modal -->
+  <div class="modal-bg" id="loginModal" style="z-index:500">
+    <div class="login-card">
+      <div class="login-logo">M</div>
+      <h3>Bank Mandiri A Yani</h3>
+      <div class="sub">Networking Bank Mandiri A Yani — Silahkah Login Dulu</div>
+      <div class="err" id="login-err"></div>
+      <input type="text" id="login-username" placeholder="Username" autocomplete="username" autocapitalize="off">
+      <input type="password" id="login-password" placeholder="Password" autocomplete="current-password">
+      <button class="btn-login" id="btn-login" onclick="doLogin()">🔐 Login</button>
+      <div class="hint" style="display:none">Peta bisa dilihat semua orang.<br>Edit/add pin butuh login.<br>Tambah user di sheet <b>📝 Data Lengkap</b> kolom <b>Y</b> (username) &amp; <b>Z</b> (password).</div>
+    </div>
+  </div>
+
+  <!-- Lightbox Modal -->
+  <div class="lightbox-bg" id="lightbox">
+    <button class="lightbox-close" onclick="closeLightbox()" title="Tutup (ESC)">×</button>
+    <button class="lightbox-nav lightbox-prev" onclick="lightboxNav(-1)" title="Sebelumnya (←)">‹</button>
+    <button class="lightbox-nav lightbox-next" onclick="lightboxNav(1)" title="Selanjutnya (→)">›</button>
+    <img class="lightbox-img" id="lightbox-img" src="" alt="">
+    <div class="lightbox-counter" id="lightbox-counter">1/1</div>
+  </div>
+
+  <!-- Settings Modal -->
+  <div class="modal-bg" id="settingsModal">
+    <div class="modal">
+      <div class="modal-head">
+        <h3>⚙ Settings</h3>
+        <button class="modal-close" onclick="closeSettings()">×</button>
+      </div>
+      <div class="modal-body">
+        <div class="settings-section">
+          <h4>API Configuration</h4>
+          <div class="field">
+            <label>Apps Script Web App URL</label>
+            <input type="text" id="cfg-api" placeholder="https://script.google.com/macros/s/.../exec">
+          </div>
+          <div class="field">
+            <label>Sheet Name</label>
+            <input type="text" id="cfg-sheet" value="📝 Data Lengkap">
+          </div>
+          <button class="btn btn-primary" onclick="saveSettings()">💾 Simpan &amp; Test</button>
+        </div>
+        <div class="settings-section">
+          <h4>Data Management</h4>
+          <div class="settings-row">
+            <span>📥 Export semua data (JSON)</span>
+            <button class="btn btn-ghost" onclick="exportJSON()">Export</button>
+          </div>
+          <div class="settings-row">
+            <span>📥 Export ke CSV</span>
+            <button class="btn btn-ghost" onclick="exportCSV()">Export</button>
+          </div>
+          <div class="settings-row">
+            <span>📤 Import JSON/CSV</span>
+            <button class="btn btn-ghost" onclick="document.getElementById('file-import').click()">Import</button>
+            <input type="file" id="file-import" accept=".json,.csv" style="display:none" onchange="importFile(event)">
+          </div>
+          <div class="settings-row">
+            <span>🗑 Reset ke data server (hapus local)</span>
+            <button class="btn btn-danger" onclick="clearLocal()">Reset</button>
+          </div>
+          <div class="settings-row">
+            <span>🎨 Hapus <b>color override</b> pin (cache browser). Catatan: warna dari spreadsheet (col-G) sekarang otomatis menang — tombol ini cuma untuk hard-reset semua override.</span>
+            <button class="btn btn-danger" onclick="clearColorOverrides()">Reset Override</button>
+          </div>
+        </div>
+        <div class="settings-section">
+          <h4>Storage Info</h4>
+          <div id="storage-info" style="font-size:11px;color:var(--text-2);line-height:1.8;font-weight:500"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="drop-zone" id="drop-zone">📤 Drop file untuk import</div>
+<script>
+const DEFAULT_API = "https://script.google.com/macros/s/AKfycbwho7rx6UIFxNSK90iMq3nMKvyziOJLxHalrIsgbobr1SLrwiqHweQuzkkx3ArsMr4mjg/exec";
+const LS_KEY = 'ayani_map_data_v1';
+const LS_PENDING = 'ayani_map_pending_v1';
+const LS_CONFIG = 'ayani_map_config_v1';
+const LS_COLORS = 'ayani_pin_colors_v1';
+
+function getColorOverride(no) {
+  try { const map = JSON.parse(localStorage.getItem(LS_COLORS) || '{}'); return map[no] || null; } catch (e) { return null; }
+}
+function setColorOverride(no, color) {
+  try { const map = JSON.parse(localStorage.getItem(LS_COLORS) || '{}'); if (color) map[no] = color; else delete map[no]; localStorage.setItem(LS_COLORS, JSON.stringify(map)); } catch (e) { console.warn('Color override save failed:', e); }
+}
+function getEffectiveColor(d) {
+  // Priority 1: per-row color from spreadsheet (authoritative — user editable)
+  if (d.color && d.color !== '') return d.color;
+  // Priority 2: localStorage override (only kicks in when spreadsheet has no color)
+  const override = getColorOverride(d.no);
+  if (override) return override;
+  // Priority 3: category color (hardcoded fallback)
+  return getCategoryColor(d.kategori);
+}
+
+const CAT_COLORS = {
+  'Advertising':'#e41e3f','Reklame':'#e41e3f','Bengkel':'#ff8c00','Service':'#ff8c00',
+  'Karpet':'#9c27b0','Gorden':'#9c27b0','Jewelry':'#e91e63','Aksesoris':'#e91e63',
+  'Kuliner':'#42b72a','Resto':'#42b72a','Makan':'#42b72a','Properti':'#795548',
+  'Kontrakan':'#795548','Rumah':'#795548','Retail':'#003D79','Toko':'#003D79',
+  'Kesehatan':'#00bcd4','Apotek':'#00bcd4','Minimarket':'#673ab7','Swalayan':'#673ab7',
+  'Perkantoran':'#607d8b','Jasa':'#607d8b','Pabrik':'#3f51b5','Manufaktur':'#3f51b5',
+  'Pendidikan':'#009688','Sekolah':'#009688','Otomotif':'#ff5722','Mobil':'#ff5722','Motor':'#ff5722',
+  'Logam':'#5d4037','Konstruksi':'#5d4037','Percetakan':'#ff9800','Sablon':'#ff9800',
+  'Gudang':'#4caf50','Logistik':'#4caf50','Industri':'#1976d2','Workshop':'#1976d2',
+  'Kecantikan':'#f06292','Salon':'#f06292','Hotel':'#7b1fa2','Penginapan':'#7b1fa2',
+  'Lembaga':'#388e3c','Yayasan':'#388e3c','Event':'#d81b60','Wedding':'#d81b60',
+  'IT':'#0288d1','Elektronik':'#0288d1','Pertanian':'#689f38','Perkebunan':'#689f38',
+  'Peternakan':'#00897b','Perikanan':'#00897b','ATK':'#5e35b1','Buku':'#5e35b1',
+};
+
+let leafletMap = null, markers = {}, markerCluster = null;
+let state = {
+  data:[], pending:[], filtered:[], activeCategory:null, activeProduct:null, activeKota:[], emptySearchQuery:'', emptyAlamatFilter:'',
+  searchQuery:'', currentTab:'cat', clickToAddMode:false, editNo:null,
+  apiOnline:false,
+  apiUrl: localStorage.getItem(LS_CONFIG) ? JSON.parse(localStorage.getItem(LS_CONFIG)).apiUrl : DEFAULT_API,
+  sheetName: localStorage.getItem(LS_CONFIG) ? JSON.parse(localStorage.getItem(LS_CONFIG)).sheetName : '📝 Data Lengkap',
+  session:{token:null,username:null,nama:null,role:null}, draftPhotos:[]
+};
+
+document.addEventListener('DOMContentLoaded', () => {
+  initMap(); loadFromLocal(); loadSession(); loadDark(); updateUserBadge();
+  checkAuth(); loadData(); setupEventListeners(); updateStats();
+  updateModeIndicator(); setupDropZone();
+  // V17 ADD: auto-request GPS saat page load (silent, ga auto-pan, cuma catat koordinat + tampilin marker)
+  setTimeout(() => { try { requestUserLocation(false); } catch(e) { console.warn('auto GPS request skipped:', e); } }, 800);
+  document.getElementById('login-password').addEventListener('keydown', e => { if (e.key === 'Enter') doLogin(); });
+  document.getElementById('login-username').addEventListener('keydown', e => { if (e.key === 'Enter') document.getElementById('login-password').focus(); });
+  if (!state.session.token) setTimeout(() => showToast('ℹ Login untuk tambah/edit pin', 'info'), 1500);
+});
+
+function initMap() {
+  leafletMap = L.map('map', {zoomControl:true}).setView([-6.1751, 106.8272], 11);
+  L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
+    attribution: '&copy; OpenStreetMap &copy; CARTO', subdomains:'abcd', maxZoom:19
+  }).addTo(leafletMap);
+  leafletMap.on('click', function(e) {
+    if (state.clickToAddMode) handleMapClick(e.latlng);
+    else document.getElementById('pin-info').classList.remove('show');
+  });
+  // ====== MOBILE: Leaflet perlu recalc saat ukuran berubah ======
+  // Resize (e.g. orientation change, address bar show/hide)
+  let _resizeTimer;
+  window.addEventListener('resize', () => {
+    clearTimeout(_resizeTimer);
+    _resizeTimer = setTimeout(() => { if(leafletMap) leafletMap.invalidateSize(); }, 150);
+  });
+  // orientationchange (lebih reliable dari resize di Safari iOS)
+  window.addEventListener('orientationchange', () => {
+    setTimeout(() => { if(leafletMap) leafletMap.invalidateSize(); }, 300);
+  });
+  // Kembali ke tab (mobile browser sering resize saat tab refocus)
+  document.addEventListener('visibilitychange', () => {
+    if(!document.hidden && leafletMap){setTimeout(()=>leafletMap.invalidateSize(),200);}
+  });
+
+// ====== V17 ADD: Geolocation (auto-request + manual respawn) ======
+let userMarker = null;
+let userAccuracyCircle = null;
+let userLocation = null;  // {lat, lng, accuracy, ts}
+
+function requestUserLocation(panTo) {
+  if (!navigator.geolocation) {
+    showToast('❌ Browser lo ga support GPS geolocation','error');
+    return;
+  }
+  const btn = document.getElementById('btn-locate');
+  if (btn) { btn.disabled = true; btn.textContent = '⏳'; }
+  showToast(panTo ? '🎯 Nyari lokasi lo...':'📍 Lagi dapet GPS...','info');
+  navigator.geolocation.getCurrentPosition(
+    (pos) => {
+      const lat = pos.coords.latitude;
+      const lng = pos.coords.longitude;
+      const acc = pos.coords.accuracy || 50;
+      userLocation = {lat, lng, accuracy: acc, ts: Date.now()};
+      showUserLocationMarker(lat, lng, acc);
+      if (panTo && leafletMap) {
+        leafletMap.flyTo([lat, lng], Math.max(15, leafletMap.getZoom()), {duration: 0.8});
+        showToast(`✅ Lokasi lo: ${lat.toFixed(5)}, ${lng.toFixed(5)} (±${Math.round(acc)}m)`,'success');
+      } else {
+        showToast(`✅ GPS: ${lat.toFixed(5)}, ${lng.toFixed(5)} (±${Math.round(acc)}m)`,'success');
+      }
+      if (btn) { btn.disabled = false; btn.textContent = '🎯'; }
+    },
+    (err) => {
+      const msg = err.code === 1 ? 'GPS denied — kasih izin lokasi di browser' :
+                  err.code === 2 ? 'GPS unavailable — cek sinyal / location service' :
+                  err.code === 3 ? 'GPS timeout — coba lagi' : 'Error: ' + err.message;
+      showToast('❌ ' + msg,'error');
+      if (btn) { btn.disabled = false; btn.textContent = '🎯'; }
+    },
+    {enableHighAccuracy: true, timeout: 10000, maximumAge: 30000}
+  );
+}
+
+function showUserLocationMarker(lat, lng, accuracy) {
+  if (!leafletMap) return;
+  // Remove old marker/circle
+  if (userMarker) { leafletMap.removeLayer(userMarker); userMarker = null; }
+  if (userAccuracyCircle) { leafletMap.removeLayer(userAccuracyCircle); userAccuracyCircle = null; }
+  // Blue dot icon
+  const userIcon = L.divIcon({
+    className: 'user-location-marker',
+    html: '<div style="position:relative;width:20px;height:20px"><div style="position:absolute;inset:0;border-radius:50%;background:rgba(0,123,255,0.25);animation:user-loc-pulse 2s ease-out infinite"></div><div style="position:absolute;inset:5px;border-radius:50%;background:#007BFF;border:2px solid #fff;box-shadow:0 0 0 1px rgba(0,0,0,0.3)"></div></div>',
+    iconSize: [20, 20],
+    iconAnchor: [10, 10]
+  });
+  userMarker = L.marker([lat, lng], {icon: userIcon, interactive: false, keyboard: false}).addTo(leafletMap);
+  // Accuracy circle (faded blue)
+  userAccuracyCircle = L.circle([lat, lng], {
+    radius: accuracy,
+    color: '#007BFF',
+    weight: 1,
+    opacity: 0.5,
+    fillColor: '#007BFF',
+    fillOpacity: 0.1
+  }).addTo(leafletMap);
+}
+
+// Inject CSS for pulse animation (only once)
+if (!document.getElementById('user-loc-style')) {
+  const style = document.createElement('style');
+  style.id = 'user-loc-style';
+  style.textContent = `@keyframes user-loc-pulse{0%{transform:scale(0.5);opacity:1}100%{transform:scale(2.5);opacity:0}}`;
+  document.head.appendChild(style);
+}
+// ====== END V17 ADD ======
+  // Initial calc after layout settle (font loading, sidebar render)
+  setTimeout(() => { if(leafletMap) leafletMap.invalidateSize(); }, 100);
+  setTimeout(() => { if(leafletMap) leafletMap.invalidateSize(); }, 500);
+}
+
+function setupEventListeners() {
+  document.getElementById('search').addEventListener('input', e => { state.searchQuery = e.target.value.toLowerCase(); applyFilter(); });
+}
+
+function loadFromLocal() {
+  try { const d = localStorage.getItem(LS_KEY); if (d) state.data = JSON.parse(d); const p = localStorage.getItem(LS_PENDING); if (p) state.pending = JSON.parse(p); } catch (e) { console.warn('LocalStorage load failed:', e); }
+}
+function saveToLocal() {
+  try { localStorage.setItem(LS_KEY, JSON.stringify(state.data)); localStorage.setItem(LS_PENDING, JSON.stringify(state.pending)); } catch (e) { showToast('LocalStorage penuh: ' + e.message, 'error'); }
+}
+function clearLocal() {
+  if (!confirm('Hapus data local & pending? Data server tetap aman.')) return;
+  localStorage.removeItem(LS_KEY); localStorage.removeItem(LS_PENDING);
+  state.data = []; state.pending = []; applyFilter(); showToast('Local data dihapus', 'success');
+}
+function getOverrideCount() {
+  try { const m=JSON.parse(localStorage.getItem(LS_COLORS)||'{}'); return Object.keys(m).length; } catch(e){ return 0; }
+}
+function clearColorOverrides() {
+  const n=getOverrideCount();
+  if (n===0) { showToast('Tidak ada color override tersimpan','info'); return; }
+  if (!confirm('Hapus '+n+' color override pin dari cache browser?\n\nSetelah reset, warna pin akan ikut data Color di spreadsheet (atau fallback ke warna kategori).')) return;
+  localStorage.removeItem(LS_COLORS);
+  showToast('✅ '+n+' color override dihapus — render ulang...','success');
+  renderMap(); renderSidebar();
+  if (typeof openSettings==='function') openSettings();
+}
+async function forceReload() {
+  const btn=document.getElementById('btn-reload');
+  if (btn) { btn.disabled=true; btn.textContent='⏳'; }
+  showToast('⟳ Force reload dari server...','info');
+  try {
+    // Bust localStorage cache too so applyFilter() sees fresh data
+    await loadData(true);
+    // Count how many pins got colors from spreadsheet
+    const fromSheet = state.data.filter(d=>d.color && d.color.trim()!=='').length;
+    const fromOverride = state.data.filter(d=>getColorOverride(d.no) && (!d.color || d.color.trim()==='')).length;
+    console.log('[reload] pins with sheet color:', fromSheet, '| with override-only:', fromOverride);
+    showToast(`✅ Reload: ${fromSheet} pin dari spreadsheet, ${fromOverride} dari override`,'success');
+  } catch(e) {
+    showToast('Gagal reload: '+e.message,'error');
+  } finally {
+    if (btn) { btn.disabled=false; btn.textContent='⟳'; }
+  }
+}
+
+async function loadData(showLoader = false) {
+  if (showLoader) document.getElementById('loader').classList.remove('hidden');
+  try {
+    // Cache-busting: Apps Script /exec caches responses; force fresh fetch
+    const url = state.apiUrl + (state.apiUrl.includes('?') ? '&' : '?') + '_t=' + Date.now();
+    const res = await fetch(url, {redirect:'follow', cache: 'no-store'});
+    if (!res.ok) { if (res.status === 404) throw new Error('Web App URL not found. Check settings.'); throw new Error('HTTP ' + res.status); }
+    const json = await res.json();
+    const serverData = json.items || [];
+    const localCount = state.data.length, localPending = state.pending.length;
+    state.data = serverData.map(d => ({
+      no: parseInt(d.no)||0, nama_tempat:d.nama_tempat||'', lokasi:d.lokasi||'',
+      kategori:d.kategori||'', kota:d.kota||'', lng:parseFloat(d.lng)||0, lat:parseFloat(d.lat)||0,
+      color:d.color||'', catatan:d.catatan||'', produk:d.produk||'', photos:d.photos||[], _local:false
+    }));
+    state.pending.filter(p=>p.op==='add').forEach(p => { const serverHasIt = p.data.no>0 && state.data.findIndex(d=>d.no===p.data.no)!==-1; if (!serverHasIt) state.data.push({...p.data,_local:true,_pending:true}); });
+    state.pending.filter(p=>p.op==='update').forEach(p => { const idx=state.data.findIndex(d=>d.no===p.data.no); if (idx>=0) state.data[idx]={...state.data[idx],...p.data,_pending:true}; });
+    state.pending.filter(p=>p.op==='delete').forEach(p => { const idx=state.data.findIndex(d=>d.no===p.targetNo); if (idx>=0) state.data[idx]._deleted=true; });
+    state.data = state.data.filter(d=>!d._deleted);
+    state.apiOnline = true; saveToLocal(); applyFilter(); updateModeIndicator(); updateStats();
+    if (!state._firstLoadDone) {
+      state._firstLoadDone = true;
+      const lost = Math.max(0, localCount - serverData.length - localPending);
+      const totalWithProduk = state.data.filter(d=>d.produk&&d.produk.trim()).length;
+      if (json._debug && json._debug.colProduk===-1) showToast('⚠️ Header "produk" gak ketemu di sheet! Cek kolom H row 1','error');
+      else if (json._debug && json._debug.colProduk>=0 && totalWithProduk===0 && state.data.length>0) showToast(`ℹ️ Kolom produk ada (idx ${json._debug.colProduk}) tapi kosong di semua pin`,'info');
+      if (lost>0) showToast(`⚠️ ${lost} pin lokal gak ada di server. Pending: ${localPending}`,'warn');
+      else if (localPending>0) showToast(`📥 ${serverData.length} dari server + ${localPending} pending`,'info');
+      else showToast(`✅ Loaded ${state.data.length} pin dari server`,'success');
+      try { const lastAdded=localStorage.getItem('ayani_last_added_no'); if (lastAdded&&state.apiOnline) setTimeout(()=>runDiagRow(parseInt(lastAdded),false),1200); } catch(e){}
+    }
+  } catch (e) {
+    state.apiOnline=false; updateModeIndicator();
+    if (state.data.length===0) showToast('Gagal memuat dari server. Pakai data local: '+e.message,'warn');
+    else showToast('⚠ Offline mode (data local)','warn');
+    console.error('Load failed:',e); applyFilter();
+  }
+  document.getElementById('loader').classList.add('hidden');
+}
+
+async function apiAdd(pin) {
+  try {
+    const params = new URLSearchParams({action:'add',token:state.session.token||'',...pin});
+    const url = state.apiUrl+'?'+params.toString();
+    console.log('🔍 apiAdd URL params:',params.toString());
+    const res = await fetch(url,{method:'GET',redirect:'follow'});
+    const data = await res.json(); handleAuthError(data);
+    if (!data.success) throw new Error(data.error||'Unknown server error');
+    state.apiOnline=true;
+    if (data.no&&!data.data) data.data={no:data.no};
+    if (data.data&&data.data.no) data.data.no=parseInt(data.data.no)||data.data.no;
+    if (data._debug_write) console.log('🔍 Backend WROTE to sheet:',data._debug_write);
+    return data;
+  } catch(error) { console.error('API Add Error:',error); state.apiOnline=false; throw error; }
+}
+
+async function apiUpdate(pin) {
+  try {
+    const params = new URLSearchParams({action:'update',token:state.session.token||'',...pin});
+    const res = await fetch(state.apiUrl+'?'+params.toString(),{method:'GET',redirect:'follow'});
+    const data = await res.json(); handleAuthError(data);
+    if (!data.success) throw new Error(data.error||'Unknown server error');
+    state.apiOnline=true; return data;
+  } catch(error) { console.error('API Update Error:',error); state.apiOnline=false; throw error; }
+}
+
+async function apiDelete(no) {
+  try {
+    const params = new URLSearchParams({action:'delete',token:state.session.token||'',no});
+    const res = await fetch(state.apiUrl+'?'+params.toString(),{method:'GET',redirect:'follow'});
+    const data = await res.json(); handleAuthError(data);
+    if (!data.success) throw new Error(data.error||'Unknown server error');
+    state.apiOnline=true; return data;
+  } catch(error) { console.error('API Delete Error:',error); state.apiOnline=false; throw error; }
+}
+
+async function apiUploadPhoto(base64,filename,mimeType) {
+  const res = await fetch(state.apiUrl,{method:'POST',body:JSON.stringify({action:'uploadphoto',token:state.session.token||'',base64,filename,mimeType})});
+  const data = await res.json(); handleAuthError(data);
+  if (!data.success) throw new Error(data.error||'Upload gagal');
+  return data;
+}
+
+function handleAuthError(data) {
+  if (data&&data.error&&/UNAUTHORIZED|expired|tidak valid/i.test(String(data.error))) { showLoginModal(true); throw new Error('Session expired — silakan login ulang'); }
+}
+
+const LS_SESSION='ayani_session_v1';
+function loadSession() { try { const s=JSON.parse(localStorage.getItem(LS_SESSION)||'null'); if (s&&s.token) state.session=s; } catch(e){} }
+function saveSession(s) { state.session=s; if (s&&s.token) localStorage.setItem(LS_SESSION,JSON.stringify(s)); else localStorage.removeItem(LS_SESSION); updateUserBadge(); }
+function updateUserBadge() {
+  const badge=document.getElementById('user-badge'), btn=document.getElementById('btn-logout');
+  if (state.session&&state.session.token) { document.getElementById('user-badge-name').textContent=state.session.nama||state.session.username||'user'; badge.style.display='flex'; btn.style.display='flex'; }
+  else { badge.style.display='none'; btn.style.display='none'; }
+}
+function showLoginModal(force) { document.getElementById('login-err').textContent=''; document.getElementById('loginModal').classList.add('show'); setTimeout(()=>document.getElementById('login-username').focus(),100); }
+function hideLoginModal() { document.getElementById('loginModal').classList.remove('show'); }
+
+async function doLogin() {
+  const username=document.getElementById('login-username').value.trim();
+  const password=document.getElementById('login-password').value;
+  const errEl=document.getElementById('login-err'), btn=document.getElementById('btn-login');
+  if (!username||!password) { errEl.textContent='Username & password wajib diisi'; return; }
+  errEl.textContent=''; btn.disabled=true; btn.textContent='⏳ Login...';
+  try {
+    const params=new URLSearchParams({action:'login',username,password});
+    const res=await fetch(state.apiUrl+'?'+params.toString(),{method:'GET',redirect:'follow'});
+    const data=await res.json();
+    if (!data.success) throw new Error(data.error||'Login gagal');
+    saveSession({token:data.token,username:data.username,nama:data.nama,role:data.role});
+    hideLoginModal(); showToast(`✅ Welcome, ${data.nama||data.username}!`,'success');
+    document.getElementById('login-password').value='';
+  } catch(e) { errEl.textContent=e.message; }
+  finally { btn.disabled=false; btn.textContent='🔐 Login'; }
+}
+
+async function doLogout() {
+  if (!confirm('Logout sekarang?')) return;
+  try { const params=new URLSearchParams({action:'logout',token:state.session.token||''}); await fetch(state.apiUrl+'?'+params.toString(),{method:'GET',redirect:'follow'}); } catch(e){}
+  saveSession({token:null,username:null,nama:null,role:null}); showToast('Logged out','success');
+}
+
+async function checkAuth() {
+  if (!state.session||!state.session.token) return false;
+  try {
+    const params=new URLSearchParams({action:'checkauth',token:state.session.token});
+    const res=await fetch(state.apiUrl+'?'+params.toString(),{method:'GET',redirect:'follow'});
+    const data=await res.json();
+    if (!data.success) { saveSession({token:null,username:null,nama:null,role:null}); return false; }
+    return true;
+  } catch(e) { return false; }
+}
+
+function requireLogin() {
+  if (!state.session||!state.session.token) { showLoginModal(true); showToast('Login dulu bro','warn'); return false; }
+  return true;
+}
+
+const LS_DARK='ayani_dark_v1';
+function loadDark() { try { const on=localStorage.getItem(LS_DARK)==='1'; if (on) document.body.classList.add('dark-mode'); updateDarkBtn(); } catch(e){} }
+function toggleDark() { const on=document.body.classList.toggle('dark-mode'); try{localStorage.setItem(LS_DARK,on?'1':'0');}catch(e){} updateDarkBtn(); showToast(on?'🌙 Dark mode on':'☀️ Light mode','info'); }
+function updateDarkBtn() { const btn=document.getElementById('btn-dark'); if (!btn) return; btn.textContent=document.body.classList.contains('dark-mode')?'☀️':'🌙'; }
+
+let lightboxPhotos=[], lightboxIndex=0;
+function openLightbox(photosArr,startIdx) { if (!photosArr||!photosArr.length) return; lightboxPhotos=photosArr; lightboxIndex=startIdx||0; renderLightbox(); document.getElementById('lightbox').classList.add('show'); }
+function closeLightbox() { document.getElementById('lightbox').classList.remove('show'); }
+function lightboxNav(delta) { if (!lightboxPhotos.length) return; lightboxIndex=(lightboxIndex+delta+lightboxPhotos.length)%lightboxPhotos.length; renderLightbox(); }
+function renderLightbox() { const fid=lightboxPhotos[lightboxIndex]; document.getElementById('lightbox-img').src='https://drive.google.com/uc?export=view&id='+fid; document.getElementById('lightbox-counter').textContent=(lightboxIndex+1)+'/'+lightboxPhotos.length; }
+document.addEventListener('keydown',e=>{ const lb=document.getElementById('lightbox'); if (!lb||!lb.classList.contains('show')) return; if (e.key==='Escape') closeLightbox(); else if (e.key==='ArrowLeft') lightboxNav(-1); else if (e.key==='ArrowRight') lightboxNav(1); });
+document.getElementById('lightbox').addEventListener('click',e=>{ if (e.target.id==='lightbox') closeLightbox(); });
+
+const PHOTOS_MAX=3;
+function initPhotoGrid() {
+  const grid=document.getElementById('photo-grid'); grid.innerHTML='';
+  for (let i=0;i<PHOTOS_MAX;i++) {
+    const slot=document.createElement('div'); slot.className='photo-slot'; slot.dataset.idx=i;
+    slot.innerHTML=`<span class="placeholder">＋</span><input type="file" accept="image/*" capture="environment">`;
+    const input=slot.querySelector('input'); input.addEventListener('change',e=>onPhotoSelected(i,e.target.files[0]));
+    grid.appendChild(slot);
+  }
+  updatePhotoCounter();
+}
+function onPhotoSelected(idx,file) {
+  if (!file) return; if (!requireLogin()) return;
+  if (file.size>5*1024*1024) { showToast('Foto max 5MB','error'); return; }
+  const reader=new FileReader();
+  reader.onload=async(e)=>{
+    const dataUrl=e.target.result; renderPhotoSlot(idx,dataUrl,null,true);
+    try { const res=await apiUploadPhoto(dataUrl,file.name,file.type||'image/jpeg'); state.draftPhotos[idx]=res.fileId; renderPhotoSlot(idx,getPhotoUrl(res.fileId,'thumb'),res.fileId,false); showToast(`✅ Foto ${idx+1} uploaded`,'success'); }
+    catch(err) { renderPhotoSlot(idx,null,null,false); state.draftPhotos[idx]=null; showToast('Upload gagal: '+err.message,'error'); }
+  };
+  reader.readAsDataURL(file);
+}
+function renderPhotoSlot(idx,src,fileId,uploading) {
+  const slot=document.querySelector(`.photo-slot[data-idx="${idx}"]`); if (!slot) return;
+  if (uploading) { slot.classList.add('uploading','has-photo'); slot.innerHTML=`<img src="${src}" alt=""><input type="file" accept="image/*" capture="environment">`; }
+  else if (src) { slot.classList.remove('uploading'); slot.classList.add('has-photo'); slot.innerHTML=`<img src="${src}" alt=""><button type="button" class="rm" onclick="removePhoto(${idx})">×</button><input type="file" accept="image/*" capture="environment">`; }
+  else { slot.classList.remove('uploading','has-photo'); slot.innerHTML=`<span class="placeholder">＋</span><input type="file" accept="image/*" capture="environment">`; const input=slot.querySelector('input'); input.addEventListener('change',e=>onPhotoSelected(idx,e.target.files[0])); }
+  updatePhotoCounter();
+}
+function removePhoto(idx) { state.draftPhotos[idx]=null; renderPhotoSlot(idx,null,null,false); }
+function updatePhotoCounter() { const c=document.getElementById('photo-counter'); const n=state.draftPhotos.filter(x=>x).length; c.textContent=`${n}/${PHOTOS_MAX} foto`; }
+function getPhotoUrl(fileId,kind) { if (!fileId) return ''; if (kind==='thumb') return `https://drive.google.com/thumbnail?id=${fileId}&sz=w400`; return `https://drive.google.com/uc?export=view&id=${fileId}`; }
+function populatePhotos(arr) { state.draftPhotos=new Array(PHOTOS_MAX).fill(null); initPhotoGrid(); (arr||[]).slice(0,PHOTOS_MAX).forEach((fid,i)=>{ if (fid) { state.draftPhotos[i]=fid; renderPhotoSlot(i,getPhotoUrl(fid,'thumb'),fid,false); } }); updatePhotoCounter(); }
+function getDraftPhotos() { return state.draftPhotos.filter(x=>x); }
+
+function queuePending(op,data,targetNo) { state.pending.push({op,data,targetNo,ts:Date.now()}); saveToLocal(); updateStats(); updateSyncButton(); setTimeout(syncPending,500); }
+async function syncPending() {
+  if (state.pending.length===0) { showToast('Tidak ada pending','info'); return; }
+  if (!state.apiOnline) { showToast('Offline - sync ditunda','warn'); return; }
+  showToast('⏳ Syncing '+state.pending.length+' perubahan...','info');
+  let successCount=0, failCount=0; const remaining=[];
+  for (const p of state.pending) {
+    let ok=false;
+    try {
+      if (p.op==='add') { const result=await apiAdd(p.data); if (result&&result.success) { const localPinIdx=state.data.findIndex(d=>d.no===p.data.no&&d._pending); if (localPinIdx!==-1) state.data[localPinIdx]={...state.data[localPinIdx],no:result.data.no,_pending:false}; ok=true; } }
+      else if (p.op==='update') { const result=await apiUpdate(p.data); if (result&&result.success) ok=true; }
+      else if (p.op==='delete') { const result=await apiDelete(p.targetNo); if (result&&result.success) ok=true; }
+    } catch(e) { console.error('Sync pending item failed:',e); }
+    if (ok) successCount++; else { remaining.push(p); failCount++; }
+  }
+  state.pending=remaining; saveToLocal();
+  if (successCount>0) { showToast(`✅ Synced ${successCount} perubahan`+(failCount>0?`, ${failCount} gagal`:''),'success'); loadData(); }
+  else showToast(`❌ Sync gagal (${failCount}) - akan retry nanti`,'error');
+  updateStats(); updateSyncButton();
+}
+function updateSyncButton() {
+  const btn=document.getElementById('btn-sync');
+  if (state.pending.length>0) { btn.classList.add('has-pending'); btn.title=`${state.pending.length} perubahan belum sync - klik untuk sync`; }
+  else { btn.classList.remove('has-pending'); btn.title='Sync pending changes'; }
+}
+
+function getCategoryColor(cat) {
+  if (!cat) return CAT_COLORS.default||'#003D79';
+  for (const key in CAT_COLORS) { if (cat.toLowerCase().includes(key.toLowerCase())) return CAT_COLORS[key]; }
+  return CAT_COLORS.default||'#003D79';
+}
+
+// Helper: strip leading emojis for sorting
+function stripLeadingEmoji(str){
+  return String(str||'').replace(/^[\s]*([\u{1F300}-\u{1FAFF}\u{2600}-\u{26FF}\u{2700}-\u{27BF}]+[\s]*)+/gu, '').trim();
+}
+
+function getCategories() { 
+  const map={}; 
+  state.data.forEach(d=>{ const cat=d.kategori||'Lainnya'; map[cat]=(map[cat]||0)+1; }); 
+  return Object.entries(map).sort((a,b)=>stripLeadingEmoji(a[0]).localeCompare(stripLeadingEmoji(b[0]))); 
+}
+function getAllProducts() { const map={}; state.data.forEach(d=>{ const prods=String(d.produk||'').split('|').map(x=>x.trim()).filter(x=>x); prods.forEach(p=>{map[p]=(map[p]||0)+1;}); }); return Object.entries(map).sort((a,b)=>b[1]-a[1]); }
+function getAllKota() { const map={}; state.data.forEach(d=>{ const k=d.kota; if(!k) return; map[k]=(map[k]||0)+1; }); return Object.entries(map).sort((a,b)=>a[0].localeCompare(b[0])); }
+
+function applyFilter() {
+  state.filtered=state.data.filter(d=>{
+    const matchCat=!state.activeCategory||d.kategori===state.activeCategory;
+    const hasCoords=!!(d.lng&&d.lat&&!isNaN(d.lng)&&!isNaN(d.lat));
+    const isEmpty=!hasCoords;
+    const matchSearch=!state.searchQuery||
+      (d.nama_tempat&&d.nama_tempat.toLowerCase().includes(state.searchQuery))||
+      (d.lokasi&&d.lokasi.toLowerCase().includes(state.searchQuery))||
+      (d.kategori&&d.kategori.toLowerCase().includes(state.searchQuery))||
+      (d.kota&&d.kota.toLowerCase().includes(state.searchQuery))||
+      (isEmpty && (state.searchQuery==='kosong'||state.searchQuery==='empty'||state.searchQuery==='tanpa koordinat'||state.searchQuery==='tanpa koord'));
+    const matchProduct=!state.activeProduct||String(d.produk||'').split('|').map(x=>x.trim()).includes(state.activeProduct);
+    const matchKota=!state.activeKota||state.activeKota.length===0||state.activeKota.includes(d.kota);
+    return matchCat&&matchSearch&&matchProduct&&matchKota;
+  });
+  renderSidebar(); renderMap(); updateStats();
+}
+
+function renderSidebar() {
+  const content=document.getElementById('sidebar-content');
+  document.getElementById('list-count').textContent=state.filtered.length;
+  const empties=getPinsWithoutCoords();
+  const emptyEl=document.getElementById('empty-count'); if (emptyEl) emptyEl.textContent=empties.length;
+
+  if (state.currentTab==='cat') {
+    const cats=getCategories(), total=state.data.length;
+    let html=`<div class="cat-item ${!state.activeCategory&&!state.activeProduct&&(!state.activeKota||state.activeKota.length===0)?'active':''}" onclick="clearFilter()"><div class="cat-color" style="background:linear-gradient(135deg,#e41e3f,#FFB700,#42b72a,#003D79)"></div><div class="cat-name">Semua</div><div class="cat-count">${total}</div></div>`;
+    cats.forEach(([cat,count])=>{
+      const active=state.activeCategory===cat?'active':'';
+      const color=getCategoryColor(cat);
+      html+=`<div class="cat-item ${active}" onclick="selectCategory('${escapeAttr(cat)}')"><div class="cat-color" style="background:${color}"></div><div class="cat-name">${escapeHtml(cat)}</div><div class="cat-count">${count}</div></div>`;
+    });
+    const products=getAllProducts();
+    if (products.length>0) {
+      const activeProd=state.activeProduct;
+      html+=`<div style="margin:10px 8px 4px;padding:8px 0 4px;border-top:1px solid var(--border);display:flex;align-items:center;gap:6px"><span style="font-size:10px;font-weight:800;color:var(--brand-primary);text-transform:uppercase;letter-spacing:.8px">🛒 Filter by Produk</span>${activeProd?`<span style="font-size:9px;color:var(--brand-primary);background:var(--brand-accent);padding:2px 7px;border-radius:8px;font-weight:700">${escapeHtml(activeProd)}</span>`:''}</div>`;
+      products.forEach(([prod,count])=>{
+        const active=activeProd===prod?'active':'';
+        const hue=Array.from(prod).reduce((h,c)=>((h<<5)-h+c.charCodeAt(0))|0,0)%360;
+        const chipColor=`hsl(${Math.abs(hue)},55%,45%)`;
+        html+=`<div class="cat-item ${active}" onclick="selectProduct('${escapeAttr(prod)}')"><div class="cat-color" style="background:${chipColor}"></div><div class="cat-name" style="font-size:12px">${escapeHtml(prod)}</div><div class="cat-count">${count}</div></div>`;
+      });
+    }
+    const kotas=getAllKota();
+    if (kotas.length>0) {
+      const activeK=state.activeKota||[];
+      const selectedCount=activeK.length;
+      html+=`<div style="margin:10px 8px 4px;padding:8px 0 4px;border-top:1px solid var(--border);display:flex;align-items:center;gap:6px;flex-wrap:wrap"><span style="font-size:10px;font-weight:800;color:var(--brand-primary);text-transform:uppercase;letter-spacing:.8px">📍 Filter by Kota</span>${selectedCount>0?`<span style="font-size:9px;color:#fff;background:var(--brand-primary);padding:2px 7px;border-radius:8px;font-weight:700">${selectedCount} dipilih</span>`:''}<button onclick="event.stopPropagation();selectAllKota()" style="margin-left:auto;background:var(--info-bg);border:1px solid rgba(0,61,121,0.2);color:var(--brand-primary);font-size:9px;font-weight:800;padding:3px 8px;border-radius:8px;cursor:pointer;text-transform:uppercase;letter-spacing:0.4px">${selectedCount===kotas.length?'☐ None':'☑ All'}</button></div>`;
+      kotas.forEach(([kota,count])=>{
+        const checked=activeK.includes(kota);
+        const hue=Array.from(kota).reduce((h,c)=>((h<<5)-h+c.charCodeAt(0))|0,0)%360;
+        const chipColor=`hsl(${Math.abs(hue)+200},60%,50%)`;
+        const checkIcon=checked?'<span style="color:var(--brand-primary);font-weight:900;margin-right:5px">✓</span>':'<span style="color:var(--text-3);font-weight:700;margin-right:5px;opacity:0.4">○</span>';
+        html+=`<div class="cat-item ${checked?'active':''}" onclick="selectKota('${escapeAttr(kota)}')" style="${checked?'border-left:3px solid var(--brand-primary);':''}">${checkIcon}<div class="cat-color" style="background:${chipColor}"></div><div class="cat-name" style="font-size:12px">${escapeHtml(kota)}</div><div class="cat-count">${count}</div></div>`;
+      });
+    }
+    content.innerHTML=html;
+  } else if (state.currentTab==='empty') {
+    if (empties.length===0) { content.innerHTML=`<div style="padding:24px;text-align:center;color:var(--success);font-size:12px;font-weight:600">✅ Semua pin sudah ada koordinat!</div>`; return; }
+    // Filter empties by search query
+    const q = (state.emptySearchQuery||'').toLowerCase().trim();
+    let filteredEmpties = q ? empties.filter(d=>
+      (d.nama_tempat&&d.nama_tempat.toLowerCase().includes(q))||
+      (d.lokasi&&d.lokasi.toLowerCase().includes(q))||
+      (d.kategori&&d.kategori.toLowerCase().includes(q))||
+      (d.kota&&d.kota.toLowerCase().includes(q))||
+      String(d.no).includes(q)
+    ) : empties;
+    
+    // Filter by alamat
+    if(state.emptyAlamatFilter){
+      filteredEmpties = filteredEmpties.filter(d=>d.lokasi===state.emptyAlamatFilter);
+    }
+    
+    // Get unique alamat for dropdown
+    const uniqueAlamat = [...new Set(empties.map(d=>d.lokasi).filter(Boolean))].sort();
+    
+    // Render search input + alamat dropdown + list container
+    if (!content.querySelector('#empty-search')) {
+      content.innerHTML=`
+        <div style="padding:6px 8px;margin-bottom:6px">
+          <input type="text" id="empty-search" placeholder="Cari nama, kategori, lokasi, no..." value="${escapeAttr(state.emptySearchQuery||'')}" style="width:100%;padding:8px 12px;border:1.5px solid var(--border);border-radius:10px;font-size:12px;background:var(--surface-2);transition:border-color var(--t-fast)">
+        </div>
+        <div style="padding:6px 8px;margin-bottom:6px">
+          <select id="empty-alamat-filter" style="width:100%;padding:8px 12px;border:1.5px solid var(--border);border-radius:10px;font-size:12px;background:#fff;color:var(--text)">
+            <option value="">-- Filter Alamat/Lokasi --</option>
+            ${uniqueAlamat.map(a=>`<option value="${escapeAttr(a)}" ${state.emptyAlamatFilter===a?'selected':''}>${escapeHtml(a)}</option>`).join('')}
+          </select>
+        </div>
+        <div style="padding:6px 12px;background:var(--warning-bg);border-radius:10px;margin-bottom:8px;font-size:11px;color:#5a4000;font-weight:600;border:1px solid rgba(255,183,0,0.2)" id="empty-counter"></div>
+        <div id="empty-list"></div>
+      `;
+      const el=document.getElementById('empty-search');
+      if(el){ el.addEventListener('input',e=>{ state.emptySearchQuery=e.target.value; renderEmptyList(); }); }
+      const alamatSel=document.getElementById('empty-alamat-filter');
+      if(alamatSel){ alamatSel.addEventListener('change',e=>{ state.emptyAlamatFilter=e.target.value; renderEmptyList(); }); }
+    }
+    // Update counter & list only
+    document.getElementById('empty-counter').textContent=`📍 ${filteredEmpties.length} dari ${empties.length} pin belum koordinat. Klik "Ambil di Peta" untuk set manual.`;
+    document.getElementById('empty-list').innerHTML=filteredEmpties.map(d=>`<div class="cat-item" style="flex-direction:column;align-items:stretch;gap:4px;padding:8px"><div style="display:flex;align-items:center;gap:6px"><div class="cat-color" style="background:var(--brand-accent);flex-shrink:0"></div><div class="cat-name" style="font-size:12px"><b>#${d.no}</b> ${escapeHtml(d.nama_tempat)}</div></div><div style="font-size:10px;color:var(--text-2);padding-left:16px">${escapeHtml(d.kategori||'-')} • ${escapeHtml(d.lokasi||'-')}</div><div style="display:flex;gap:4px;padding-left:16px"><button onclick="startPickForPin(${d.no})" style="flex:1;padding:6px;border:none;background:var(--brand-primary);color:#fff;border-radius:9px;font-size:11px;cursor:pointer;font-weight:700;box-shadow:0 2px 6px rgba(0,61,121,0.3)">📍 Ambil di Peta</button></div></div>`).join('');
+  } else {
+    if (state.filtered.length===0) { content.innerHTML=`<div style="padding:24px;text-align:center;color:var(--text-3);font-size:12px;font-weight:500">🔍 Tidak ada hasil</div>`; return; }
+    content.innerHTML=state.filtered.map(d=>{ const pending=d._pending?'<span style="color:var(--brand-accent);font-weight:700">⏳</span> ':''; return `<div class="cat-item" onclick="focusPin(${d.no})"><div class="cat-color" style="background:${getCategoryColor(d.kategori)}"></div><div class="cat-name">${pending}${escapeHtml(d.nama_tempat)}</div><div class="cat-count" title="${escapeAttr(d.kategori||'')}">${d.kategori?d.kategori.replace(/^[^a-zA-Z0-9]+/,'').substring(0,3):'?'}</div></div>`; }).join('');
+  }
+}
+
+function renderMap() {
+  if (!leafletMap) return;
+  if (markerCluster) leafletMap.removeLayer(markerCluster);
+  markerCluster=L.layerGroup();
+  for (const id in markers) { if (markers[id]) leafletMap.removeLayer(markers[id]); }
+  markers={};
+  state.filtered.forEach(d=>{
+    if (!d.lng||!d.lat||isNaN(d.lng)||isNaN(d.lat)) return;
+    const color=getEffectiveColor(d);
+    const dimmed=state.activeCategory&&d.kategori!==state.activeCategory?'pin-dim':'';
+    const pendingCls=d._pending?'pin-pending-ring':'';
+    const icon=L.divIcon({className:`custom-pin ${dimmed} ${pendingCls}`,html:`<div style="background-color:${color};width:100%;height:100%;border-radius:50%;display:flex;align-items:center;justify-content:center">${d.no}</div>`,iconSize:[20,20],iconAnchor:[10,10]});
+    const marker=L.marker([d.lat,d.lng],{icon, draggable:true});
+    marker.on('add',function(){ const el=marker.getElement(); if (el) el.style.backgroundColor=color; });
+    marker.on('click',(e)=>{ L.DomEvent.stopPropagation(e); if(state.clickToAddMode) return; showPinInfo(d.no,e.originalEvent,marker); });
+    // ===== DRAG TO MOVE PIN =====
+    marker.on('dragstart', function(e) {
+      L.DomEvent.stopPropagation(e);
+      document.getElementById('pin-info').classList.remove('show');
+      const el=e.target.getElement(); if (el) { el.style.zIndex='2000'; el.style.transform='scale(1.4)'; el.style.boxShadow='0 8px 32px rgba(0,0,0,0.4)'; }
+      showToast('📍 Geser pin ke posisi baru...', 'info');
+    });
+    marker.on('drag', function(e) {
+      // Optional: real-time feedback bisa ditambah di sini
+    });
+    marker.on('dragend', function(e) {
+      L.DomEvent.stopPropagation(e);
+      const newLatLng=e.target.getLatLng();
+      const el=e.target.getElement(); if (el) { el.style.zIndex=''; el.style.transform=''; el.style.boxShadow=''; }
+      if (!state.session || !state.session.token) {
+        showToast('❌ Login dulu buat pindahin pin', 'error');
+        renderMap(); // reset posisi
+        return;
+      }
+      updatePinCoords(d.no, newLatLng.lat, newLatLng.lng);
+    });
+    markers[d.no]=marker; markerCluster.addLayer(marker);
+  });
+  leafletMap.addLayer(markerCluster);
+}
+
+async function updatePinCoords(no, lat, lng) {
+  const item=state.data.find(d=>d.no===no); if (!item) return;
+  const pin={no,nama_tempat:item.nama_tempat,lokasi:item.lokasi,kategori:item.kategori,lng,lat,color:getEffectiveColor(item)};
+  try{
+    const result=await apiUpdate(pin);
+    if(result&&result.success){
+      const idx=state.data.findIndex(d=>d.no===no);
+      if(idx>=0) { state.data[idx]={...state.data[idx],lng,lat,_pending:false}; saveToLocal(); }
+      applyFilter();
+      showToast(`✅ Pin #${no} dipindahkan ke ${lat.toFixed(5)}, ${lng.toFixed(5)}`, 'success');
+    } else {
+      renderMap(); // reset ke posisi lama
+      showToast('Gagal memindahkan pin', 'error');
+    }
+  }catch(e){
+    renderMap(); // reset ke posisi lama
+    showToast('Gagal: '+e.message, 'error'); console.error(e);
+  }
+}
+
+function showPinInfo(no,event,markerInstance) {
+  const item=state.data.find(d=>d.no===no); if (!item) return;
+  const info=document.getElementById('pin-info');
+  const effectiveColor=getEffectiveColor(item);
+  const pendingTag=item._pending?'<span style="color:var(--brand-accent);font-size:10px;font-weight:700">⏳ pending sync</span>':'';
+  const produkArr=parseProdukStr(item.produk);
+  const produkHtml=produkArr.length?`<div class="pin-info-prod">${produkArr.map(p=>`<span class="tag${p==='None'?' none':''}">${escapeHtml(p)}</span>`).join('')}</div>`:'';
+  const catatanHtml=item.catatan?`<div class="pin-info-notes">📝 ${escapeHtml(item.catatan)}</div>`:'';
+  const photosRaw=item.photos;
+  const photosArr=Array.isArray(photosRaw)?photosRaw:(photosRaw?String(photosRaw).split('|').filter(x=>x):[]);
+  const photosJson=JSON.stringify(photosArr).replace(/'/g,'&#39;');
+  const photosHtml=photosArr.length?`<div class="pin-photos">${photosArr.map((fid,i)=>`<a href="javascript:void(0)" onclick="openLightbox(${photosJson},${i})" title="Lihat foto full"><img src="https://drive.google.com/thumbnail?id=${escapeAttr(fid)}&sz=w400" alt="" loading="lazy" onerror="this.parentElement.style.display='none'"></a>`).join('')}</div>`:'';
+  const isLogged=!!(state.session&&state.session.token);
+  const actionsHtml=isLogged?`<div class="pin-info-actions"><button class="edit" onclick="editPin(${item.no})">✏ Edit</button><button class="del" onclick="deletePin(${item.no})">🗑 Hapus</button></div>`:`<div style="font-size:10px;color:var(--text-2);margin-top:6px;padding:5px 8px;background:var(--surface-2);border-radius:7px;font-weight:500;border:1px solid var(--border)">🔒 Login untuk edit/hapus</div>`;
+  info.innerHTML=`<div class="pin-info-head"><div style="width:14px;height:14px;border-radius:50%;background:${effectiveColor};box-shadow:0 0 0 2px #fff,0 2px 6px rgba(0,0,0,0.2)"></div><span>#${item.no} ${escapeHtml(item.nama_tempat)}</span></div><div class="pin-info-cat">${escapeHtml(item.kategori||'Tanpa kategori')}</div><div class="pin-info-loc">${escapeHtml(item.lokasi||'-')}</div><div class="pin-info-loc" style="font-size:10px;color:var(--text-3)">📍 ${item.lat.toFixed(5)}, ${item.lng.toFixed(5)}</div>${produkHtml}${catatanHtml}${photosHtml}${actionsHtml}${pendingTag?`<div style="font-size:10px;margin-top:4px">${pendingTag}</div>`:''}  `;
+  if (markerInstance) { const pt=leafletMap.latLngToContainerPoint(markerInstance.getLatLng()); info.style.left=(pt.x+15)+'px'; info.style.top=(pt.y-15)+'px'; }
+  info.classList.add('show');
+}
+
+function selectCategory(cat){state.activeCategory=cat;applyFilter();}
+function selectProduct(prod){state.activeProduct=state.activeProduct===prod?null:prod;applyFilter();}
+function selectKota(kota){if(!Array.isArray(state.activeKota))state.activeKota=[];const idx=state.activeKota.indexOf(kota);if(idx>=0)state.activeKota.splice(idx,1);else state.activeKota.push(kota);applyFilter();}
+function selectAllKota(){const kotas=getAllKota().map(k=>k[0]);if(!Array.isArray(state.activeKota))state.activeKota=[];if(state.activeKota.length===kotas.length)state.activeKota=[];else state.activeKota=kotas.slice();applyFilter();}
+function clearFilter(){state.activeCategory=null;state.activeProduct=null;state.activeKota=[];state.searchQuery='';state.emptySearchQuery='';state.emptyAlamatFilter='';document.getElementById('search').value='';applyFilter();}
+function switchTab(tab){state.currentTab=tab;if(tab!=='empty')state.emptySearchQuery='';document.querySelectorAll('.sidebar-tabs button').forEach(b=>b.classList.toggle('active',b.dataset.tab===tab));if(tab==='empty'&&state.activeCategory)state.activeCategory=null;renderSidebar();}
+function renderEmptyList() {
+  const empties=getPinsWithoutCoords();
+  const q = (state.emptySearchQuery||'').toLowerCase().trim();
+  let filteredEmpties = q ? empties.filter(d=>
+    (d.nama_tempat&&d.nama_tempat.toLowerCase().includes(q))||
+    (d.lokasi&&d.lokasi.toLowerCase().includes(q))||
+    (d.kategori&&d.kategori.toLowerCase().includes(q))||
+    (d.kota&&d.kota.toLowerCase().includes(q))||
+    String(d.no).includes(q)
+  ) : empties;
+  
+  // Filter by alamat
+  if(state.emptyAlamatFilter){
+    filteredEmpties = filteredEmpties.filter(d=>d.lokasi===state.emptyAlamatFilter);
+  }
+  
+  const counter=document.getElementById('empty-counter');
+  const list=document.getElementById('empty-list');
+  if(counter) counter.textContent=`📍 ${filteredEmpties.length} dari ${empties.length} pin belum koordinat. Klik "Ambil di Peta" untuk set manual.`;
+  if(list) list.innerHTML=filteredEmpties.map(d=>`<div class="cat-item" style="flex-direction:column;align-items:stretch;gap:4px;padding:8px"><div style="display:flex;align-items:center;gap:6px"><div class="cat-color" style="background:var(--brand-accent);flex-shrink:0"></div><div class="cat-name" style="font-size:12px"><b>#${d.no}</b> ${escapeHtml(d.nama_tempat)}</div></div><div style="font-size:10px;color:var(--text-2);padding-left:16px">${escapeHtml(d.kategori||'-')} • ${escapeHtml(d.lokasi||'-')}</div><div style="display:flex;gap:4px;padding-left:16px"><button onclick="startPickForPin(${d.no})" style="flex:1;padding:6px;border:none;background:var(--brand-primary);color:#fff;border-radius:9px;font-size:11px;cursor:pointer;font-weight:700;box-shadow:0 2px 6px rgba(0,61,121,0.3)">📍 Ambil di Peta</button></div></div>`).join('');
+}
+function focusPin(no){switchTab('list');const item=state.data.find(d=>d.no===no);if(!item||!item.lng||!item.lat)return;leafletMap.setView([item.lat,item.lng],16);if(markers[no])showPinInfo(no,null,markers[no]);}
+
+function getRandomColor(){const letters='0123456789ABCDEF';let color='#';for(let i=0;i<6;i++)color+=letters[Math.floor(Math.random()*16)];return color;}
+
+function openAddModal(prefill={}){
+  if(!requireLogin())return;
+  state.editNo=null;
+  document.getElementById('form-title').textContent='➕ Tambah Pin Baru';
+  document.getElementById('form-no').value='';
+  document.getElementById('form-nama').value=prefill.nama||'';
+  document.getElementById('form-lokasi').value=prefill.lokasi||'';
+  document.getElementById('form-kategori').value=prefill.kategori||'';
+  document.getElementById('form-lng').value=prefill.lng||'';
+  document.getElementById('form-lat').value=prefill.lat||'';
+  document.getElementById('form-color').value=prefill.color||getRandomColor();
+  document.getElementById('form-catatan').value=prefill.catatan||'';
+  populateProdukList(prefill.produk?parseProdukStr(prefill.produk):['None']);
+  populatePhotos(prefill.photos||[]);
+  document.getElementById('btn-delete').style.display='none';
+  populateKategoriDropdown(); populateLokasiDropdown();
+  document.getElementById('formModal').classList.add('show');
+  setTimeout(()=>document.getElementById('form-nama').focus(),200);
+}
+
+function editPin(no){
+  if(!requireLogin())return;
+  try{
+    const item=state.data.find(d=>d.no===no);
+    if(!item){showToast('Pin tidak ditemukan','error');return;}
+    state.editNo=no;
+    document.getElementById('form-title').textContent=`✏ Edit Pin #${no}`;
+    document.getElementById('form-no').value=no;
+    document.getElementById('form-nama').value=item.nama_tempat||'';
+    document.getElementById('form-lokasi').value=item.lokasi||'';
+    document.getElementById('form-kategori').value=item.kategori||'';
+    document.getElementById('form-lng').value=item.lng||0;
+    document.getElementById('form-lat').value=item.lat||0;
+    document.getElementById('form-color').value=item.color||getCategoryColor(item.kategori)||'#003D79';
+    document.getElementById('form-catatan').value=item.catatan||'';
+    populateProdukList(parseProdukStr(item.produk));
+    const photosRaw=item.photos;
+    const photosArr=Array.isArray(photosRaw)?photosRaw:(photosRaw?String(photosRaw).split('|').filter(x=>x):[]);
+    populatePhotos(photosArr);
+    document.getElementById('btn-delete').style.display='inline-flex';
+    populateKategoriDropdown(); populateLokasiDropdown();
+    document.getElementById('pin-info').classList.remove('show');
+    document.getElementById('formModal').classList.add('show');
+    setTimeout(()=>document.getElementById('form-nama').focus(),200);
+  }catch(e){console.error('editPin error:',e);showToast('Error buka form: '+e.message,'error');}
+}
+
+function closeFormModal(){document.getElementById('formModal').classList.remove('show');state.editNo=null;}
+
+function populateKategoriDropdown(){
+  const sel=document.getElementById('form-kategori'), current=sel.value;
+  const cats=getCategories(), products=getAllProducts();
+  const catSet=new Set(cats.map(c=>c[0]));
+  let html='<option value="">-- Pilih Kategori --</option><optgroup label="— Kategori —">';
+  cats.forEach(([c,count])=>{ html+=`<option value="${escapeAttr(c)}">${escapeHtml(c)} (${count})</option>`; });
+  html+='</optgroup>';
+  const onlyInProduct=products.filter(([name])=>!catSet.has(name));
+  if(onlyInProduct.length>0){
+    html+='<optgroup label="— Dari Produk (auto) —">';
+    onlyInProduct.forEach(([name,count])=>{ html+=`<option value="${escapeAttr(name)}">🛒 ${escapeHtml(name)} (${count})</option>`; });
+    html+='</optgroup>';
+  }
+  html+='<option value="__new">➕ Kategori Baru...</option>';
+  sel.innerHTML=html; if(current) sel.value=current;
+  sel.onchange=e=>{ 
+    if(e.target.value==='__new'){
+      const v=prompt('Nama kategori baru:');if(v){
+        const opt=document.createElement('option');opt.value=v;opt.textContent=v+' (baru)';opt.selected=true;
+        sel.insertBefore(opt,sel.lastChild.previousElementSibling);
+        CAT_COLORS[v]='#cccccc';
+      }else sel.value=current||''; 
+    } else {
+      // Auto-set color picker to category color
+      const catColor = getCategoryColor(e.target.value);
+      document.getElementById('form-color').value = catColor;
+      // Filter lokasi dropdown by selected category
+      filterLokasiByCategory(e.target.value);
+    }
+  };
+}
+
+function getUniqueValues(key){const values=new Set();state.data.forEach(d=>{if(d[key])values.add(d[key]);});return Array.from(values).sort();}
+
+async function runDiagRow(no,silent){
+  if(!state.apiOnline||!state.apiUrl){if(!silent)showToast('⚠️ API offline, gak bisa diag','warn');return;}
+  try{
+    const params=new URLSearchParams({action:'diagrow',no});
+    const res=await fetch(state.apiUrl+'?'+params.toString(),{redirect:'follow'});
+    const json=await res.json();
+    if(!json.success){if(!silent)showToast('❌ Diag gagal: '+(json.error||'unknown'),'error');return;}
+    const cols=json.columns||[];
+    const find=(headerName)=>cols.find(c=>c.header&&c.header.toLowerCase()===headerName.toLowerCase());
+    const colProduk=find('produk'),colCatatan=find('catatan'),colPhotos=find('photos');
+    const summary=['Pin #'+no+':','H:'+(colProduk?colProduk.header+'='+colProduk.valueStr:'GAK ADA'),'I:'+(colCatatan?colCatatan.header+'='+colCatatan.valueStr:'GAK ADA'),'J:'+(colPhotos?colPhotos.header+'='+colPhotos.valueStr:'GAK ADA')].join(' | ');
+    console.log('DIAGROW',json); console.log(summary);
+    if(!silent)showToast(summary,'info'); return json;
+  }catch(e){if(!silent)showToast('❌ Diag error: '+e.message,'error');console.error('runDiagRow error:',e);}
+}
+window.runDiagRow=runDiagRow;
+
+function populateLokasiDropdown(selectedCategory=''){
+  const sel=document.getElementById('form-lokasi'),current=sel.value;
+  let allLokasis=getUniqueValues('lokasi');
+  
+  if(selectedCategory){
+    // Get locations that have pins with this category
+    const pinsWithCat = state.data.filter(d=>d.kategori===selectedCategory && d.lokasi);
+    const matchingLokasis = [...new Set(pinsWithCat.map(d=>d.lokasi))].sort();
+    
+    // Build options: matching first (with 📍 indicator), then others
+    let html='<option value="">-- Pilih Lokasi --</option>';
+    if(matchingLokasis.length>0){
+      html+='<optgroup label="📍 Cocok dengan kategori ' + escapeHtml(selectedCategory) + '">';
+      matchingLokasis.forEach(l=>{ html+=`<option value="${escapeAttr(l)}">${escapeHtml(l)}</option>`; });
+      html+='</optgroup>';
+    }
+    // Other locations
+    const otherLokasis = allLokasis.filter(l=>!matchingLokasis.includes(l)).sort();
+    if(otherLokasis.length>0){
+      html+='<optgroup label="— Lokasi Lainnya —">';
+      otherLokasis.forEach(l=>{ html+=`<option value="${escapeAttr(l)}">${escapeHtml(l)}</option>`; });
+      html+='</optgroup>';
+    }
+    html+='<option value="__new_lokasi">➕ Lokasi Baru...</option>';
+    sel.innerHTML=html;
+  }else{
+    // No category filter: show all
+    sel.innerHTML='<option value="">-- Pilih Lokasi --</option>'+allLokasis.map(l=>`<option value="${escapeAttr(l)}">${escapeHtml(l)}</option>`).join('')+'<option value="__new_lokasi">➕ Lokasi Baru...</option>';
+  }
+  
+  // Restore selection if it exists in the new options
+  if(current && [...sel.options].some(o=>o.value===current)){
+    sel.value=current;
+  }
+  sel.onchange=e=>{if(e.target.value==='__new_lokasi'){const v=prompt('Nama lokasi baru:');if(v){const opt=document.createElement('option');opt.value=v;opt.textContent=v+' (baru)';opt.selected=true;sel.insertBefore(opt,sel.lastChild.previousElementSibling);sel.value=v;}else sel.value=current||'';}}
+}
+function filterLokasiByCategory(cat){
+  populateLokasiDropdown(cat);
+}
+
+function pickOnMap(){
+  closeFormModal(); toggleClickToAdd(true);
+  const hint=document.createElement('div'); hint.className='placement-hint'; hint.textContent='📍 Klik di peta untuk set koordinat (ESC untuk batal)';
+  document.body.appendChild(hint); setTimeout(()=>hint.remove(),3000);
+  const escHandler=e=>{if(e.key==='Escape'){toggleClickToAdd(false);document.removeEventListener('keydown',escHandler);}};
+  document.addEventListener('keydown',escHandler);
+}
+
+let pickModePinNo=null;
+function getPinsWithoutCoords(){return state.data.filter(d=>!d.lng||!d.lat||isNaN(d.lng)||isNaN(d.lat));}
+
+function startPickForPin(no){
+  const item=state.data.find(d=>d.no===no); if(!item)return;
+  pickModePinNo=no; state.clickToAddMode=false;
+  const hint=document.createElement('div'); hint.className='placement-hint'; hint.id='pick-hint';
+  hint.textContent=`📍 Klik di peta untuk set koordinat pin #${no} "${item.nama_tempat}" (ESC batal)`;
+  document.body.appendChild(hint); setTimeout(()=>{const h=document.getElementById('pick-hint');if(h)h.remove();},5000);
+  leafletMap.getContainer().classList.add('placing');
+  const escHandler=e=>{if(e.key==='Escape'){stopPickForPin();document.removeEventListener('keydown',escHandler);}};
+  document.addEventListener('keydown',escHandler);
+}
+
+function stopPickForPin(){pickModePinNo=null;leafletMap.getContainer().classList.remove('placing');const h=document.getElementById('pick-hint');if(h)h.remove();}
+
+async function saveCoordsForPin(no,lat,lng){
+  const item=state.data.find(d=>d.no===no); if(!item)return;
+  const color=getEffectiveColor(item);
+  const pin={no,nama_tempat:item.nama_tempat,lokasi:item.lokasi,kategori:item.kategori,lng,lat,color};
+  try{
+    const result=await apiUpdate(pin);
+    if(result&&result.success){const idx=state.data.findIndex(d=>d.no===no);if(idx>=0)state.data[idx]={...state.data[idx],lng,lat,_pending:false};saveToLocal();showToast(`✅ Pin #${no} "${item.nama_tempat}" dapat koordinat`,'success');applyFilter();}
+    else showToast('Gagal update koordinat','error');
+  }catch(e){showToast('Gagal: '+e.message,'error');console.error(e);}
+}
+
+function handleMapClick(latlng){
+  if(pickModePinNo!==null){const no=pickModePinNo;stopPickForPin();saveCoordsForPin(no,latlng.lat,latlng.lng);return;}
+  if(!state.clickToAddMode)return;
+  toggleClickToAdd(false); 
+  // Get selected category color for the new pin
+  const selectedCat = document.getElementById('form-kategori').value;
+  const catColor = selectedCat ? getCategoryColor(selectedCat) : getRandomColor();
+  openAddModal({lat:latlng.lat,lng:latlng.lng, color: catColor});
+}
+
+function toggleClickToAdd(force){
+  state.clickToAddMode=force!==undefined?force:!state.clickToAddMode;
+  const btn=document.getElementById('btn-place'), container=leafletMap.getContainer();
+  if(state.clickToAddMode){btn.style.background='var(--danger)';container.classList.add('placing');}
+  else{btn.style.background='var(--brand-primary)';container.classList.remove('placing');}
+}
+
+function addProdukRow(value){
+  const list=document.getElementById('produk-list'), row=document.createElement('div');
+  row.className='produk-row';
+  row.innerHTML=`<input type="text" placeholder="Tulis produk (mis. Tabungan, Deposito, None, dll)" value="${(value||'').replace(/"/g,'&quot;')}"><button type="button" class="rm" onclick="removeProdukRow(this)" title="Hapus">×</button>`;
+  list.appendChild(row); updateProdukRmButtons();
+}
+function removeProdukRow(btn){const list=document.getElementById('produk-list');if(list.children.length<=1){showToast('Minimal 1 baris produk','warn');return;}btn.parentElement.remove();updateProdukRmButtons();}
+function updateProdukRmButtons(){const list=document.getElementById('produk-list');const btns=list.querySelectorAll('.rm');btns.forEach(b=>b.disabled=list.children.length<=1);}
+function getProdukList(){const list=document.getElementById('produk-list');return Array.from(list.querySelectorAll('input')).map(s=>s.value.trim()).filter(v=>v);}
+function populateProdukList(arr){const list=document.getElementById('produk-list');list.innerHTML='';const items=(arr&&arr.length)?arr:[''];items.forEach(v=>addProdukRow(v));}
+function parseProdukStr(s){if(!s)return[];return String(s).split('|').map(x=>x.trim()).filter(x=>x);}
+
+async function savePin(){
+  if(!requireLogin())return;
+  const nama=document.getElementById('form-nama').value.trim();
+  let lokasi=document.getElementById('form-lokasi').value.trim();
+  const kategori=document.getElementById('form-kategori').value;
+  const lng=parseFloat(document.getElementById('form-lng').value)||0;
+  const lat=parseFloat(document.getElementById('form-lat').value)||0;
+  const color=document.getElementById('form-color').value;
+  const catatan=document.getElementById('form-catatan').value.trim();
+  const produkArr=getProdukList(), produk=produkArr.join('|');
+  const photosArr=getDraftPhotos(), photos=photosArr.join('|');
+  if(!nama){showToast('Nama tempat wajib diisi','error');return;}
+  if(!kategori||kategori==='__new'){showToast('Kategori wajib dipilih','error');return;}
+  if(lokasi==='__new_lokasi'){
+    lokasi=prompt('Nama lokasi baru:');
+    if(!lokasi){showToast('Lokasi baru wajib diisi','error');document.getElementById('form-lokasi').value='';return;}
+    const selLokasi=document.getElementById('form-lokasi');
+    const opt=document.createElement('option');opt.value=lokasi;opt.textContent=lokasi+' (baru)';opt.selected=true;
+    selLokasi.insertBefore(opt,selLokasi.lastChild.previousElementSibling);selLokasi.value=lokasi;
+  }
+  if(!lokasi){showToast('Lokasi wajib diisi','error');return;}
+  const btn=document.getElementById('btn-save');
+  btn.disabled=true;btn.textContent='⏳ Menyimpan...';
+  try{
+    if(state.editNo!==null){
+      const pin={no:state.editNo,nama_tempat:nama,lokasi,kategori,lng,lat,color,catatan,produk,photos};
+      const result=await apiUpdate(pin);
+      if(result&&result.success){setColorOverride(state.editNo,color);const idx=state.data.findIndex(d=>d.no===state.editNo);if(idx>=0)state.data[idx]={...state.data[idx],...pin,_pending:false};saveToLocal();showToast(`✅ Pin #${state.editNo} diupdate`,'success');closeFormModal();applyFilter();toggleClickToAdd(false);}
+      else{setColorOverride(state.editNo,color);queuePending('update',pin);const idx=state.data.findIndex(d=>d.no===state.editNo);if(idx>=0)state.data[idx]={...state.data[idx],...pin,_pending:true};saveToLocal();showToast(`⏳ Update di-queue (offline), akan sync otomatis`,'warn');closeFormModal();applyFilter();toggleClickToAdd(false);}
+    }else{
+      const pin={nama_tempat:nama,lokasi,kategori,lng,lat,color,catatan,produk,photos};
+      const tempNo=Math.min(...state.data.map(d=>d.no||0),0)-1;
+      state.data.push({...pin,no:tempNo,_pending:true});saveToLocal();
+      // Don't applyFilter() here - wait for server response to avoid double render flicker
+      const result=await apiAdd(pin);
+      const newNo=(result&&(result.no||(result.data&&result.data.no)))?parseInt(result.no||result.data.no):null;
+      if(result&&result.success&&newNo){setColorOverride(newNo,color);const idx=state.data.findIndex(d=>d.no===tempNo&&d._pending);if(idx>=0)state.data[idx]={...pin,no:newNo,_pending:false};saveToLocal();try{localStorage.setItem('ayani_last_added_no',String(newNo));}catch(e){}showToast(`✅ Pin #${newNo} ditambahkan`,'success');closeFormModal();applyFilter();toggleClickToAdd(false);}
+      else{queuePending('add',{...pin,no:tempNo});showToast(`⏳ Pin #${tempNo} di-queue (server lambat/offline), akan sync otomatis`,'warn');closeFormModal();applyFilter();toggleClickToAdd(false);}
+    }
+  }catch(e){showToast('Gagal: '+e.message,'error');console.error(e);}
+  btn.disabled=false;btn.textContent='💾 Simpan';
+}
+
+async function deletePin(no){
+  if(!requireLogin())return;
+  if(no===undefined)no=state.editNo;
+  if(no===null)return;
+  if(!confirm(`Hapus pin #${no}?`))return;
+  try{
+    const result=await apiDelete(no);
+    if(result&&result.success){state.data=state.data.filter(d=>d.no!==no);saveToLocal();showToast(`🗑 Pin #${no} dihapus`,'success');}
+    else{queuePending('delete',null,no);state.data=state.data.filter(d=>d.no!==no);saveToLocal();showToast(`⏳ Delete di-queue (offline)`,'warn');}
+  }catch(e){queuePending('delete',null,no);state.data=state.data.filter(d=>d.no!==no);saveToLocal();showToast(`Gagal hapus dari server. ⏳ Delete di-queue (offline): ${e.message}`,'warn');console.error(e);}
+  closeFormModal();document.getElementById('pin-info').classList.remove('show');applyFilter();
+}
+
+function toggleSidebar(){
+  const sidebar=document.getElementById('sidebar');
+  const backdrop=document.getElementById('sidebar-backdrop');
+  const isHidden=sidebar.classList.toggle('hidden');
+  if(backdrop){
+    if(isHidden) backdrop.classList.remove('show');
+    else backdrop.classList.add('show');
+  }
+  // Leaflet perlu recalc size setelah sidebar toggle (layout berubah)
+  if(typeof leafletMap!=='undefined' && leafletMap){setTimeout(()=>leafletMap.invalidateSize(),260);}
+}
+
+function updateStats(){
+  document.getElementById('stat-total').textContent=state.data.length;
+  document.getElementById('stat-shown').textContent=state.filtered.filter(d=>d.lng&&d.lat).length;
+  const pendingWrap=document.getElementById('stat-pending-wrap');
+  if(state.pending.length>0){pendingWrap.style.display='flex';document.getElementById('stat-pending').textContent=state.pending.length;}
+  else pendingWrap.style.display='none';
+}
+
+function updateModeIndicator(){
+  const ind=document.getElementById('mode-indicator'),txt=document.getElementById('mode-text');
+  if(state.apiOnline){ind.className='mode-indicator online';txt.textContent='Online';}
+  else{ind.className='mode-indicator offline';txt.textContent='Offline (local)';}
+}
+
+function openSettings(){
+  document.getElementById('cfg-api').value=state.apiUrl;
+  document.getElementById('cfg-sheet').value=state.sheetName;
+  const dataSize=(localStorage.getItem(LS_KEY)||'').length;
+  const pendingSize=(localStorage.getItem(LS_PENDING)||'').length;
+  const overrideCount=getOverrideCount();
+  document.getElementById('storage-info').innerHTML=`📦 Data: ${state.data.length} pin (${(dataSize/1024).toFixed(1)} KB)<br>⏳ Pending: ${state.pending.length} perubahan (${(pendingSize/1024).toFixed(1)} KB)<br>🎨 Color override: <b style="color:${overrideCount>0?'var(--warning)':'var(--text-3)'}">${overrideCount} pin</b>${overrideCount>0?' <span style="font-size:10px">(override cuma aktif untuk pin TANPA col-G Color di spreadsheet)</span>':''}<br>🌐 API: ${state.apiOnline?'✅ Online':'❌ Offline'}<br>📍 Last sync: ${new Date().toLocaleString('id-ID')}`;
+  document.getElementById('settingsModal').classList.add('show');
+}
+function closeSettings(){document.getElementById('settingsModal').classList.remove('show');}
+function saveSettings(){
+  const api=document.getElementById('cfg-api').value.trim();
+  const sheet=document.getElementById('cfg-sheet').value.trim()||'📝 Data Lengkap';
+  if(!api){showToast('API URL wajib diisi','error');return;}
+  state.apiUrl=api;state.sheetName=sheet;
+  localStorage.setItem(LS_CONFIG,JSON.stringify({apiUrl:api,sheetName:sheet}));
+  showToast('⏳ Testing...','info');
+  loadData(true).then(()=>{if(state.apiOnline){showToast('✅ Tersimpan & connected','success');closeSettings();}else showToast('⚠ Tersimpan tapi gagal connect','error');});
+}
+
+function exportJSON(){
+  const data=state.data.map(d=>({no:d.no,nama_tempat:d.nama_tempat,lokasi:d.lokasi,kategori:d.kategori,lng:d.lng,lat:d.lat,color:d.color}));
+  const blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'});
+  const url=URL.createObjectURL(blob),a=document.createElement('a');
+  a.href=url;a.download=`ayani_pins_${new Date().toISOString().slice(0,10)}.json`;a.click();URL.revokeObjectURL(url);
+  showToast(`📥 Exported ${data.length} pins to JSON`,'success');
+}
+function exportCSV(){
+  const headers=['no','nama_tempat','lokasi','kategori','lng','lat','color'];
+  const rows=[headers.join(',')];
+  state.data.forEach(d=>{rows.push(headers.map(h=>{const v=String(d[h]||'').replace(/"/g,'""');return /[,\n"]/.test(v)?`"${v}"`:v;}).join(','));});
+  const blob=new Blob([rows.join('\n')],{type:'text/csv'});
+  const url=URL.createObjectURL(blob),a=document.createElement('a');
+  a.href=url;a.download=`ayani_pins_${new Date().toISOString().slice(0,10)}.csv`;a.click();URL.revokeObjectURL(url);
+  showToast(`📥 Exported ${state.data.length} pins to CSV`,'success');
+}
+function importFile(event){
+  const file=event.target.files[0];if(!file)return;
+  const reader=new FileReader();
+  reader.onload=e=>{
+    try{
+      let imported=[];
+      if(file.name.endsWith('.json'))imported=JSON.parse(e.target.result);
+      else if(file.name.endsWith('.csv')){const lines=e.target.result.split('\n');const headers=lines[0].split(',');imported=lines.slice(1).filter(l=>l.trim()).map(line=>{const vals=parseCSVLine(line);const obj={};headers.forEach((h,i)=>obj[h.trim()]=vals[i]);obj.no=parseInt(obj.no);obj.lng=parseFloat(obj.lng);obj.lat=parseFloat(obj.lat);return obj;});}
+      if(!Array.isArray(imported)||imported.length===0){showToast('File kosong atau format salah','error');return;}
+      if(!confirm(`Import ${imported.length} pin? (replace existing data lokal)`))return;
+      state.data=imported;saveToLocal();applyFilter();showToast(`📤 Imported ${imported.length} pins`,'success');closeSettings();
+    }catch(err){showToast('Gagal parse: '+err.message,'error');}
+  };
+  reader.readAsText(file);event.target.value='';
+}
+function parseCSVLine(line){
+  const result=[];let cur='',inQuote=false;
+  for(let i=0;i<line.length;i++){const c=line[i];if(c=='"')inQuote=!inQuote;else if(c===','&&!inQuote){result.push(cur);cur='';}else cur+=c;}
+  result.push(cur);return result;
+}
+function setupDropZone(){
+  const dz=document.getElementById('drop-zone');
+  ['dragover','dragenter'].forEach(e=>document.addEventListener(e,ev=>{ev.preventDefault();dz.classList.add('show');}));
+  ['dragleave','drop'].forEach(e=>document.addEventListener(e,ev=>{ev.preventDefault();dz.classList.remove('show');}));
+  document.addEventListener('drop',e=>{e.preventDefault();if(e.dataTransfer.files.length){const file=e.dataTransfer.files[0];importFile({target:{files:[file],value:''}});}});
+}
+function showToast(msg,type){const t=document.createElement('div');t.className='toast '+(type||'success');t.textContent=msg;document.body.appendChild(t);setTimeout(()=>{t.style.opacity='0';t.style.transition='opacity .3s';},2500);setTimeout(()=>t.remove(),3000);}
+function escapeHtml(s){return String(s||'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
+function escapeAttr(s){return String(s||'').replace(/'/g,'&#39;').replace(/"/g,'&quot;');}
+</script>
+</body>
+</html>
