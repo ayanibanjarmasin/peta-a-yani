@@ -39,3 +39,7 @@ coverage/
 dist/
 build/
 *.tsbuildinfo
+
+# Backup files (kept locally only)
+index-overengineered.html
+V17-original.html
