@@ -20,46 +20,150 @@
 <link rel="apple-touch-icon" href="/assets/icons/icon-192.png">
 <style>
   /* ============================================================
-     ULTRA MODERN 2026 DESIGN SYSTEM
-     Primary: Deep Navy #003D79 (R0 G61 B121)
-     Accent:  Gold    #FFB700 (R255 G183 B0)
-     Style: Glassmorphism, premium micro-interactions, 2026 aesthetic
+     MODERN DESIGN SYSTEM 2026
+     Brand: Bank Mandiri Navy + Gold
+     Style: Layered glass, semantic tokens, light + dark theme
      ============================================================ */
   :root {
+    /* === Brand === */
     --brand-primary: #003D79;
     --brand-primary-light: #004f9e;
     --brand-primary-dark: #002a55;
-    --brand-blue: #003D79;
     --brand-accent: #FFB700;
     --brand-accent-light: #ffc933;
     --brand-accent-dark: #e6a500;
-    --bg: #f0f4f8;
-    --surface: #ffffff;
-    --surface-2: #f5f8fc;
-    --surface-3: #e4eaf3;
-    --border: #dde4ef;
+
+    /* === Neutral scale (cool grey, slightly blue-tinted) === */
+    --n-0:  #ffffff;
+    --n-50: #f7f9fc;
+    --n-100: #eef2f7;
+    --n-200: #dde4ef;
+    --n-300: #c5d0e0;
+    --n-400: #98a8be;
+    --n-500: #6b7c95;
+    --n-600: #4a5b75;
+    --n-700: #324358;
+    --n-800: #1c293a;
+    --n-900: #0d1b2e;
+    --n-1000: #050b16;
+
+    /* === Semantic surface (light theme) === */
+    --bg:        #f0f4f8;
+    --bg-mesh:   radial-gradient(at 20% 0%, rgba(0,79,158,0.06) 0%, transparent 50%),
+                 radial-gradient(at 80% 100%, rgba(255,183,0,0.05) 0%, transparent 50%);
+    --surface:    #ffffff;
+    --surface-2:  #f7f9fc;
+    --surface-3:  #eef2f7;
+    --border:     #dde4ef;
     --border-strong: #c5d0e0;
-    --text: #0d1b2e;
-    --text-2: #3d5068;
-    --text-3: #8fa3b8;
-    --success: #00b87a;
+    --text:       #0d1b2e;
+    --text-2:     #4a5b75;
+    --text-3:     #98a8be;
+    --text-inv:   #ffffff;
+
+    /* === Status === */
+    --success:    #00b87a;
     --success-bg: #d0f5e8;
-    --danger: #f03e5e;
-    --danger-bg: #fde8ec;
-    --warning: #FFB700;
+    --danger:     #f03e5e;
+    --danger-bg:  #fde8ec;
+    --warning:    #FFB700;
     --warning-bg: #fff4cc;
-    --info: #003D79;
-    --info-bg: #e0eaf5;
-    --shadow-xs: 0 1px 3px rgba(0,61,121,0.06);
-    --shadow-sm: 0 2px 8px rgba(0,61,121,0.08);
-    --shadow-md: 0 4px 20px rgba(0,61,121,0.10);
-    --shadow-lg: 0 12px 48px rgba(0,61,121,0.15);
+    --info:       #003D79;
+    --info-bg:    #e0eaf5;
+
+    /* === Glass === */
+    --glass-bg:    rgba(255,255,255,0.72);
+    --glass-bg-2:  rgba(255,255,255,0.86);
+    --glass-bg-3:  rgba(255,255,255,0.94);
+    --glass-border: rgba(255,255,255,0.6);
+    --glass-shadow: 0 8px 32px rgba(13,27,46,0.08), 0 1px 0 rgba(255,255,255,0.6) inset;
+
+    /* === Radius === */
+    --r-xs:  6px;
+    --r-sm:  10px;
+    --r-md:  14px;
+    --r-lg:  20px;
+    --r-xl:  26px;
+    --r-2xl: 32px;
+    --r-full: 999px;
+
+    /* === Shadow (4-tier) === */
+    --shadow-xs: 0 1px 2px rgba(13,27,46,0.05);
+    --shadow-sm: 0 2px 8px rgba(13,27,46,0.06), 0 1px 0 rgba(255,255,255,0.6) inset;
+    --shadow-md: 0 4px 16px rgba(13,27,46,0.08), 0 1px 0 rgba(255,255,255,0.6) inset;
+    --shadow-lg: 0 12px 40px rgba(13,27,46,0.12), 0 1px 0 rgba(255,255,255,0.6) inset;
+    --shadow-xl: 0 24px 64px rgba(13,27,46,0.18), 0 1px 0 rgba(255,255,255,0.6) inset;
     --shadow-glow: 0 0 0 3px rgba(0,61,121,0.18);
     --shadow-gold: 0 0 0 3px rgba(255,183,0,0.28);
-    --ease: cubic-bezier(0.4, 0, 0.2, 1);
-    --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
-    --t-fast: 0.15s;
-    --t-med: 0.25s;
+
+    /* === Motion === */
+    --ease:         cubic-bezier(0.4, 0, 0.2, 1);
+    --ease-out:     cubic-bezier(0.16, 1, 0.3, 1);
+    --ease-spring:  cubic-bezier(0.34, 1.56, 0.64, 1);
+    --t-fast:  0.15s;
+    --t-med:   0.25s;
+    --t-slow:  0.4s;
+  }
+
+  /* === Dark theme === */
+  [data-theme="dark"] {
+    --bg:        #060d1a;
+    --bg-mesh:   radial-gradient(at 20% 0%, rgba(0,79,158,0.18) 0%, transparent 50%),
+                 radial-gradient(at 80% 100%, rgba(255,183,0,0.08) 0%, transparent 50%);
+    --surface:    #0d1b2e;
+    --surface-2:  #14253d;
+    --surface-3:  #1c3050;
+    --border:     #1c3050;
+    --border-strong: #2a4263;
+    --text:       #e8eef7;
+    --text-2:     #a3b3cc;
+    --text-3:     #6b7c95;
+    --text-inv:   #0d1b2e;
+
+    --success-bg: rgba(0,184,122,0.15);
+    --danger-bg:  rgba(240,62,94,0.15);
+    --warning-bg: rgba(255,183,0,0.15);
+    --info-bg:    rgba(0,79,158,0.2);
+
+    --glass-bg:    rgba(13,27,46,0.72);
+    --glass-bg-2:  rgba(13,27,46,0.86);
+    --glass-bg-3:  rgba(13,27,46,0.94);
+    --glass-border: rgba(255,255,255,0.08);
+    --glass-shadow: 0 8px 32px rgba(0,0,0,0.35), 0 1px 0 rgba(255,255,255,0.05) inset;
+
+    --shadow-xs: 0 1px 2px rgba(0,0,0,0.3);
+    --shadow-sm: 0 2px 8px rgba(0,0,0,0.35), 0 1px 0 rgba(255,255,255,0.05) inset;
+    --shadow-md: 0 4px 16px rgba(0,0,0,0.4), 0 1px 0 rgba(255,255,255,0.05) inset;
+    --shadow-lg: 0 12px 40px rgba(0,0,0,0.5), 0 1px 0 rgba(255,255,255,0.05) inset;
+    --shadow-xl: 0 24px 64px rgba(0,0,0,0.6), 0 1px 0 rgba(255,255,255,0.05) inset;
+    --shadow-glow: 0 0 0 3px rgba(0,79,158,0.5);
+    --shadow-gold: 0 0 0 3px rgba(255,183,0,0.4);
+  }
+  /* Auto dark mode (system) — only when no explicit choice */
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme]) {
+      --bg:        #060d1a;
+      --bg-mesh:   radial-gradient(at 20% 0%, rgba(0,79,158,0.18) 0%, transparent 50%),
+                   radial-gradient(at 80% 100%, rgba(255,183,0,0.08) 0%, transparent 50%);
+      --surface:    #0d1b2e;
+      --surface-2:  #14253d;
+      --surface-3:  #1c3050;
+      --border:     #1c3050;
+      --border-strong: #2a4263;
+      --text:       #e8eef7;
+      --text-2:     #a3b3cc;
+      --text-3:     #6b7c95;
+      --text-inv:   #0d1b2e;
+      --success-bg: rgba(0,184,122,0.15);
+      --danger-bg:  rgba(240,62,94,0.15);
+      --warning-bg: rgba(255,183,0,0.15);
+      --info-bg:    rgba(0,79,158,0.2);
+      --glass-bg:    rgba(13,27,46,0.72);
+      --glass-bg-2:  rgba(13,27,46,0.86);
+      --glass-bg-3:  rgba(13,27,46,0.94);
+      --glass-border: rgba(255,255,255,0.08);
+      --glass-shadow: 0 8px 32px rgba(0,0,0,0.35), 0 1px 0 rgba(255,255,255,0.05) inset;
+    }
   }
 
   *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
@@ -72,7 +176,7 @@
 
   /* Smooth scroll di area yang bisa di-scroll (sidebar, modal body) */
   .sidebar-content,.modal-body,.pin-photos,.catatan-box{ -webkit-overflow-scrolling: touch; }
-  body{font-family:-apple-system,BlinkMacSystemFont,"Inter","Segoe UI",Roboto,sans-serif;background:var(--bg);color:var(--text);display:flex;flex-direction:column;font-feature-settings:"cv11","ss01";-webkit-font-smoothing:antialiased}
+  body{font-family:-apple-system,BlinkMacSystemFont,"Inter","Segoe UI",Roboto,sans-serif;background:var(--bg);background-image:var(--bg-mesh);background-attachment:fixed;color:var(--text);display:flex;flex-direction:column;font-feature-settings:"cv11","ss01","ss03";-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;letter-spacing:-0.005em;transition:background-color var(--t-med) var(--ease), color var(--t-med) var(--ease)}
 
   ::-webkit-scrollbar{width:6px;height:6px}
   ::-webkit-scrollbar-track{background:transparent}
@@ -84,7 +188,7 @@
   .topbar::before{content:"";position:absolute;top:0;right:0;width:280px;height:100%;background:radial-gradient(ellipse at top right,rgba(255,183,0,0.18) 0%,transparent 70%);pointer-events:none}
   .topbar::after{content:"";position:absolute;bottom:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(255,183,0,0.45),transparent)}
   .topbar h1{font-size:14px;font-weight:700;flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;letter-spacing:-0.02em;position:relative}
-  .topbar h1 .logo{height:30px;width:auto;display:inline-block;margin-right:10px;vertical-align:middle}
+  .topbar h1 .logo{height:34px;width:auto;display:inline-block;margin-right:12px;vertical-align:middle;filter:drop-shadow(0 1px 0 rgba(255,255,255,0.2))}
   .topbar .sub{font-size:10px;opacity:.75;display:block;margin-top:1px;font-weight:400;letter-spacing:0.03em}
   .topbar-actions{display:flex;gap:6px;align-items:center;position:relative}
   .topbar-actions button{background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.12);color:#fff;width:44px;height:44px;border-radius:12px;cursor:pointer;font-size:16px;display:flex;align-items:center;justify-content:center;transition:all var(--t-fast) var(--ease);backdrop-filter:blur(8px);touch-action:manipulation}
@@ -94,7 +198,7 @@
   @keyframes pulse{0%,100%{transform:scale(1);box-shadow:0 0 0 0 rgba(255,183,0,0.5)}50%{transform:scale(1.08);box-shadow:0 0 0 8px rgba(255,183,0,0)}}
 
   /* TOOLBAR */
-  .toolbar{background:rgba(255,255,255,0.93);padding:10px 14px;display:flex;gap:8px;align-items:center;border-bottom:1px solid var(--border);flex-shrink:0;flex-wrap:wrap;backdrop-filter:saturate(180%) blur(12px);-webkit-backdrop-filter:saturate(180%) blur(12px);box-shadow:0 1px 0 rgba(0,61,121,0.05)}
+  .toolbar{background:var(--glass-bg-2);padding:10px 14px;display:flex;gap:8px;align-items:center;border-bottom:1px solid var(--border);flex-shrink:0;flex-wrap:wrap;backdrop-filter:saturate(180%) blur(20px);-webkit-backdrop-filter:saturate(180%) blur(20px);box-shadow:var(--shadow-xs);position:relative;z-index:10}
   .search-box{flex:1;min-width:140px;position:relative}
   .search-box input{width:100%;padding:14px 14px 14px 42px;border:1.5px solid var(--border);border-radius:24px;font-size:16px;background:var(--surface-2);transition:all var(--t-fast) var(--ease);color:var(--text);font-weight:500}
   .search-box input::placeholder{color:var(--text-3)}
@@ -116,7 +220,18 @@
 
   /* LAYOUT */
   .main{flex:1;display:flex;overflow:hidden;position:relative}
-  .sidebar{width:285px;max-width:85vw;background:rgba(255,255,255,0.96);border-right:1px solid var(--border);display:flex;flex-direction:column;flex-shrink:0;transition:transform var(--t-med) var(--ease);z-index:5;backdrop-filter:saturate(180%) blur(12px);-webkit-backdrop-filter:saturate(180%) blur(12px)}
+  .sidebar{width:285px;max-width:85vw;background:var(--glass-bg-2);border-right:1px solid var(--border);display:flex;flex-direction:column;flex-shrink:0;transition:width var(--t-med) var(--ease), transform var(--t-med) var(--ease);z-index:5;backdrop-filter:saturate(180%) blur(20px);-webkit-backdrop-filter:saturate(180%) blur(20px);box-shadow:1px 0 0 var(--glass-border) inset}
+  /* === Modern sidebar rail (collapsed) === */
+  .sidebar.collapsed{width:64px}
+  .sidebar.collapsed .sidebar-head,
+  .sidebar.collapsed .sidebar-tabs,
+  .sidebar.collapsed .sidebar-content,
+  .sidebar.collapsed .sidebar-foot{display:none}
+  .sidebar.collapsed .sidebar-rail{display:flex}
+  .sidebar-rail{display:none;flex-direction:column;gap:6px;padding:12px 8px;align-items:center}
+  .sidebar-rail button{width:48px;height:48px;border-radius:var(--r-md);background:transparent;border:1px solid transparent;color:var(--text-2);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:18px;transition:all var(--t-fast) var(--ease)}
+  .sidebar-rail button:hover{background:var(--surface-2);color:var(--brand-primary);border-color:var(--border)}
+  .sidebar-rail button.active{background:var(--brand-primary);color:#fff;border-color:var(--brand-primary)}
   .sidebar.hidden{transform:translateX(-100%);position:absolute;height:100%;box-shadow:var(--shadow-lg);max-width:85vw}
   .sidebar-backdrop{position:absolute;inset:0;background:rgba(0,29,61,0.4);opacity:0;pointer-events:none;transition:opacity var(--t-med) var(--ease);z-index:4;backdrop-filter:blur(2px);-webkit-backdrop-filter:blur(2px);display:none}
   .sidebar-backdrop.show{opacity:1;pointer-events:auto;display:block}
@@ -150,9 +265,11 @@
   .custom-pin > div{box-shadow:0 0 0 3px #fff,0 4px 12px rgba(0,0,0,0.35);font-weight:800;color:#fff;font-size:10px;text-shadow:0 1px 2px rgba(0,0,0,0.5)}
   .pin-dim{opacity:0.2}
   .pin-pending-ring{border:2px dashed var(--brand-accent) !important;animation:spin 2s linear infinite}
-  /* Mini pin tooltip */
+  /* PERF: pin tooltip — light, mobile-friendly */
   .pin-tooltip{background:rgba(13,27,46,.96)!important;color:#fff!important;border:none!important;border-radius:8px!important;padding:5px 10px!important;font-size:12px!important;font-weight:600!important;box-shadow:0 4px 14px rgba(0,0,0,.25)!important;white-space:nowrap!important}
   .pin-tooltip::before{border-top-color:rgba(13,27,46,.96)!important}
+  /* Cluster pin override (replaces default Leaflet styles) */
+  .custom-cluster-pin{background:transparent!important;border:none!important}
   @keyframes spin{to{transform:rotate(360deg)}}
 
   /* Zoom controls */
@@ -185,7 +302,7 @@
     .stats-item .v{font-size:11px}
     .mode-indicator{top:60px;right:12px;left:auto;font-size:11px;padding:6px 12px;max-width:40vw}
     .topbar h1{font-size:13px}
-    .topbar h1 .logo{height:26px;margin-right:8px}
+    .topbar h1 .logo{height:30px;margin-right:9px}
     .topbar .sub{display:none}
     .topbar-actions{gap:4px}
     .topbar-actions button{width:40px;height:40px;border-radius:11px;font-size:15px}
@@ -223,7 +340,7 @@
     .pin-info-head{font-size:13px}
     /* Login: padding aman */
     .login-card{padding:24px 22px;border-radius:20px}
-    .login-logo{height:44px;margin-bottom:10px}
+    .login-logo{height:48px;margin-bottom:10px}
     .login-card h3{font-size:16px}
     /* Stats mobile — sembunyikan label "Tampil" kalau sempit */
     .stats-item.shown-mobile-hide{display:none}
@@ -240,7 +357,7 @@
   @media(max-width:480px){
     .topbar{padding:8px 12px;gap:8px}
     .topbar h1{font-size:12px;letter-spacing:-0.01em}
-    .topbar h1 .logo{height:24px;margin-right:6px}
+    .topbar h1 .logo{height:26px;margin-right:6px}
     .topbar-actions{gap:3px}
     .topbar-actions button{width:36px;height:36px;font-size:14px;border-radius:10px}
     .dark-toggle{width:32px;height:32px}
@@ -276,7 +393,7 @@
   @media(max-width:900px) and (orientation:landscape) and (max-height:500px){
     .topbar{padding:6px 14px}
     .topbar h1{font-size:12px}
-    .topbar h1 .logo{height:22px;margin-right:6px}
+    .topbar h1 .logo{height:24px;margin-right:6px}
     .topbar .sub{display:none}
     .toolbar{padding:5px 10px}
     .toolbar .btn{padding:7px 10px;min-height:36px;font-size:11px}
@@ -365,7 +482,8 @@
 
   /* Login modal */
   .login-card{background:#fff;border-radius:24px;max-width:340px;width:100%;padding:32px 28px;box-shadow:0 24px 80px rgba(0,61,121,0.2);animation:slideUp var(--t-med) var(--ease-spring);border:1px solid var(--border)}
-  .login-logo{width:auto;height:56px;display:block;margin:0 auto 14px}
+  .login-logo{width:72px;height:72px;background:linear-gradient(135deg,var(--brand-primary-dark),var(--brand-primary));border-radius:22px;display:flex;align-items:center;justify-content:center;font-size:36px;color:var(--brand-accent);font-weight:900;margin:0 auto 16px;box-shadow:0 10px 30px rgba(0,61,121,0.35);transform:rotate(-3deg);transition:transform var(--t-fast) var(--ease-spring)}
+  .login-card:hover .login-logo{transform:rotate(0deg) scale(1.05)}
   .login-card h3{text-align:center;font-size:18px;color:var(--text);margin-bottom:4px;font-weight:800;letter-spacing:-0.02em}
   .login-card .sub{text-align:center;font-size:12px;color:var(--text-2);margin-bottom:22px;font-weight:500}
   .login-card input{width:100%;padding:14px 16px;border:1.5px solid var(--border);border-radius:13px;font-size:16px;margin-bottom:12px;background:var(--surface-2);transition:all var(--t-fast) var(--ease);color:var(--text);font-weight:500;min-height:48px}
@@ -486,6 +604,214 @@
   /* Drop zone */
   .drop-zone{position:fixed;inset:0;background:rgba(0,29,61,0.94);display:none;align-items:center;justify-content:center;z-index:300;color:#fff;font-size:18px;font-weight:700;backdrop-filter:blur(8px);border:3px dashed rgba(255,183,0,0.4)}
   .drop-zone.show{display:flex;animation:fadeIn var(--t-fast) var(--ease)}
+
+  /* ============================================================
+     MODERN COMPONENTS 2026
+     ============================================================ */
+
+  /* === Glassmorphic pin info card (replaces legacy .pin-info text popup) === */
+  .pin-card{position:absolute;width:min(320px,calc(100vw - 32px));background:var(--glass-bg-3);backdrop-filter:saturate(180%) blur(24px);-webkit-backdrop-filter:saturate(180%) blur(24px);border:1px solid var(--glass-border);border-radius:var(--r-xl);box-shadow:var(--shadow-lg);padding:18px;z-index:600;display:none;animation:popIn var(--t-med) var(--ease-spring);transform-origin:bottom left}
+  .pin-card.show{display:block}
+  .pin-card-head{display:flex;align-items:flex-start;gap:10px;margin-bottom:10px}
+  .pin-card-pin{flex-shrink:0;width:36px;height:36px;border-radius:var(--r-md);display:flex;align-items:center;justify-content:center;font-weight:900;font-size:13px;color:#fff;box-shadow:0 2px 8px rgba(0,0,0,0.15)}
+  .pin-card-title{flex:1;min-width:0}
+  .pin-card-title h4{font-size:15px;font-weight:800;line-height:1.25;color:var(--text);margin:0 0 2px;letter-spacing:-0.01em}
+  .pin-card-title .cat{font-size:10px;font-weight:800;color:var(--brand-primary);text-transform:uppercase;letter-spacing:0.06em;background:var(--info-bg);padding:3px 8px;border-radius:var(--r-full);display:inline-block}
+  .pin-card-close{flex-shrink:0;background:transparent;border:none;color:var(--text-3);cursor:pointer;font-size:20px;line-height:1;width:28px;height:28px;border-radius:var(--r-sm);display:flex;align-items:center;justify-content:center;transition:all var(--t-fast) var(--ease)}
+  .pin-card-close:hover{background:var(--surface-2);color:var(--text)}
+  .pin-card-loc{font-size:12px;color:var(--text-2);display:flex;align-items:center;gap:4px;margin-bottom:10px}
+  .pin-card-prods{display:flex;flex-wrap:wrap;gap:4px;margin-bottom:10px}
+  .pin-card-prods .tag{font-size:10px;font-weight:700;background:var(--info-bg);color:var(--brand-primary);padding:3px 8px;border-radius:var(--r-full);border:1px solid rgba(0,61,121,0.1)}
+  .pin-card-prods .tag.none{background:transparent;color:var(--text-3);border:1px dashed var(--border)}
+  .pin-card-notes{font-size:11.5px;color:var(--text-2);background:var(--warning-bg);border-left:3px solid var(--brand-accent);padding:8px 10px;border-radius:var(--r-sm);margin-bottom:10px;line-height:1.4}
+  .pin-card-photos{display:flex;gap:4px;margin-bottom:12px;flex-wrap:wrap}
+  .pin-card-photos a{width:48px;height:48px;border-radius:var(--r-sm);background:var(--surface-2);background-size:cover;background-position:center;display:block;border:1px solid var(--border);transition:transform var(--t-fast) var(--ease)}
+  .pin-card-photos a:hover{transform:scale(1.05);border-color:var(--brand-primary)}
+  .pin-card-actions{display:flex;gap:6px}
+  .pin-card-actions .btn{flex:1;justify-content:center;padding:9px 10px;font-size:12px;min-height:36px}
+
+  /* === Filter chips (modern replacement for long category list) === */
+  .chip{display:inline-flex;align-items:center;gap:5px;padding:6px 12px;border-radius:var(--r-full);background:var(--surface-2);color:var(--text-2);font-size:11px;font-weight:700;border:1px solid var(--border);cursor:pointer;transition:all var(--t-fast) var(--ease);white-space:nowrap;touch-action:manipulation}
+  .chip:hover{background:var(--surface-3);color:var(--text);border-color:var(--border-strong)}
+  .chip.active{background:var(--brand-primary);color:#fff;border-color:var(--brand-primary);box-shadow:0 2px 8px rgba(0,61,121,0.25)}
+  .chip.active.accent{background:var(--brand-accent);color:var(--brand-primary);border-color:var(--brand-accent-dark)}
+  .chip .dot{width:8px;height:8px;border-radius:50%;background:currentColor;flex-shrink:0;opacity:0.6}
+  .chip .count{background:rgba(0,0,0,0.08);padding:1px 6px;border-radius:var(--r-full);font-size:10px;margin-left:2px}
+  .chip.active .count{background:rgba(255,255,255,0.2)}
+  .chip-row{display:flex;gap:6px;overflow-x:auto;padding:8px 0;scrollbar-width:none}
+  .chip-row::-webkit-scrollbar{display:none}
+  @keyframes chipIn{0%{opacity:0;transform:translateY(4px) scale(0.95)}100%{opacity:1;transform:translateY(0) scale(1)}}
+
+  /* === Command palette (⌘K) === */
+  .cmdk-bg{position:fixed;inset:0;background:rgba(6,13,26,0.5);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);z-index:1000;display:none;align-items:flex-start;justify-content:center;padding-top:min(20vh, 140px);padding-left:16px;padding-right:16px;animation:fadeIn var(--t-fast) var(--ease)}
+  .cmdk-bg.show{display:flex}
+  .cmdk{width:100%;max-width:600px;background:var(--glass-bg-3);backdrop-filter:saturate(180%) blur(24px);-webkit-backdrop-filter:saturate(180%) blur(24px);border:1px solid var(--glass-border);border-radius:var(--r-xl);box-shadow:var(--shadow-xl);overflow:hidden;animation:popIn var(--t-med) var(--ease-spring)}
+  .cmdk-input-wrap{display:flex;align-items:center;gap:12px;padding:18px 20px;border-bottom:1px solid var(--border)}
+  .cmdk-input-wrap svg{width:18px;height:18px;color:var(--text-3);flex-shrink:0}
+  .cmdk-input{flex:1;border:none;outline:none;background:transparent;color:var(--text);font-size:16px;font-weight:500;font-family:inherit}
+  .cmdk-input::placeholder{color:var(--text-3)}
+  .cmdk-kbd{font-size:10px;background:var(--surface-2);color:var(--text-3);padding:3px 7px;border-radius:var(--r-sm);border:1px solid var(--border);font-weight:700;letter-spacing:0.04em}
+  .cmdk-list{max-height:60vh;overflow-y:auto;padding:8px}
+  .cmdk-section{font-size:10px;font-weight:800;color:var(--text-3);text-transform:uppercase;letter-spacing:0.08em;padding:10px 12px 4px}
+  .cmdk-item{display:flex;align-items:center;gap:12px;padding:10px 12px;border-radius:var(--r-sm);cursor:pointer;transition:background var(--t-fast) var(--ease);color:var(--text)}
+  .cmdk-item:hover,.cmdk-item.selected{background:var(--info-bg);color:var(--brand-primary)}
+  .cmdk-item .icon{width:24px;height:24px;display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0}
+  .cmdk-item .label{flex:1;font-size:13px;font-weight:600}
+  .cmdk-item .sub{font-size:11px;color:var(--text-3)}
+  .cmdk-item .kbd{margin-left:auto;font-size:10px;background:var(--surface-2);color:var(--text-3);padding:2px 6px;border-radius:var(--r-xs);font-weight:700}
+  .cmdk-empty{padding:32px;text-align:center;color:var(--text-3);font-size:12px}
+  .cmdk-foot{display:flex;gap:14px;padding:10px 16px;border-top:1px solid var(--border);background:var(--surface-2);font-size:10px;color:var(--text-3)}
+  .cmdk-foot kbd{background:var(--surface);border:1px solid var(--border);padding:1px 5px;border-radius:var(--r-xs);font-family:inherit;font-size:10px;margin-right:3px}
+  .cmdk-foot .item{display:flex;align-items:center;gap:3px}
+
+  /* === Modern empty states === */
+  .empty-state{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:40px 20px;text-align:center;color:var(--text-2);min-height:200px}
+  .empty-state .icon-wrap{width:64px;height:64px;border-radius:var(--r-xl);background:linear-gradient(135deg,var(--info-bg),var(--surface-3));display:flex;align-items:center;justify-content:center;font-size:28px;margin-bottom:14px;box-shadow:var(--shadow-sm)}
+  .empty-state h3{font-size:15px;font-weight:800;color:var(--text);margin:0 0 6px;letter-spacing:-0.01em}
+  .empty-state p{font-size:12px;line-height:1.5;color:var(--text-2);max-width:240px;margin:0 0 16px}
+  .empty-state .action{background:var(--brand-primary);color:#fff;border:none;padding:9px 16px;border-radius:var(--r-full);font-size:12px;font-weight:700;cursor:pointer;box-shadow:0 4px 12px rgba(0,61,121,0.25);transition:all var(--t-fast) var(--ease)}
+  .empty-state .action:hover{transform:translateY(-1px);box-shadow:0 6px 18px rgba(0,61,121,0.35)}
+
+  /* === Modern toast (stacking, undo-friendly) === */
+  .toast-stack{position:fixed;top:calc(20px + env(safe-area-inset-top, 0px));left:50%;transform:translateX(-50%);display:flex;flex-direction:column;gap:8px;z-index:200;pointer-events:none}
+  .toast{padding:11px 18px;border-radius:var(--r-lg);color:#fff;font-size:12.5px;font-weight:700;box-shadow:var(--shadow-lg);animation:toastIn var(--t-med) var(--ease-spring);max-width:90vw;text-align:center;backdrop-filter:blur(10px);border:1px solid rgba(255,255,255,0.15);display:flex;align-items:center;gap:10px;pointer-events:auto}
+  .toast .undo{background:rgba(255,255,255,0.18);border:none;color:#fff;padding:3px 10px;border-radius:var(--r-full);font-size:11px;font-weight:800;cursor:pointer}
+  .toast .undo:hover{background:rgba(255,255,255,0.28)}
+  .toast.success{background:linear-gradient(135deg,#007a52,var(--success))}
+  .toast.warn{background:linear-gradient(135deg,#b8860b,var(--warning));color:var(--brand-primary)}
+  .toast.error{background:linear-gradient(135deg,#a01030,var(--danger))}
+  .toast.info{background:linear-gradient(135deg,var(--brand-primary-dark),var(--brand-primary))}
+  @keyframes toastIn{0%{opacity:0;transform:translateY(-12px) scale(0.96)}100%{opacity:1;transform:translateY(0) scale(1)}}
+
+  /* === Modern modal (slide + scale entry) === */
+  .modal-bg{position:fixed;inset:0;background:rgba(6,13,26,0.5);display:none;align-items:center;justify-content:center;z-index:100;padding:16px;padding-top:calc(16px + env(safe-area-inset-top, 0px));padding-bottom:calc(16px + env(safe-area-inset-bottom, 0px));backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);animation:fadeIn var(--t-fast) var(--ease)}
+  .modal-bg.show{display:flex}
+  .modal{background:var(--glass-bg-3);backdrop-filter:saturate(180%) blur(24px);-webkit-backdrop-filter:saturate(180%) blur(24px);border:1px solid var(--glass-border);border-radius:var(--r-xl);box-shadow:var(--shadow-xl);max-width:min(560px,100%);width:100%;max-height:88vh;display:flex;flex-direction:column;animation:modalIn var(--t-med) var(--ease-spring);transform-origin:bottom}
+  @keyframes modalIn{0%{opacity:0;transform:translateY(20px) scale(0.96)}100%{opacity:1;transform:translateY(0) scale(1)}}
+  @keyframes fadeIn{from{opacity:0}to{opacity:1}}
+  @keyframes popIn{0%{opacity:0;transform:scale(0.9)}100%{opacity:1;transform:scale(1)}}
+  .modal-head{padding:16px 20px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;flex-shrink:0}
+  .modal-head h3{font-size:15px;font-weight:800;color:var(--text);letter-spacing:-0.01em;display:flex;align-items:center;gap:8px}
+  .modal-close{width:32px;height:32px;border-radius:var(--r-sm);background:transparent;border:none;color:var(--text-2);cursor:pointer;font-size:18px;display:flex;align-items:center;justify-content:center;transition:all var(--t-fast) var(--ease)}
+  .modal-close:hover{background:var(--surface-2);color:var(--text)}
+  .modal-body{padding:18px 20px;overflow-y:auto;flex:1}
+  .modal-actions{padding:14px 20px;border-top:1px solid var(--border);display:flex;gap:8px;justify-content:space-between;flex-shrink:0;background:var(--surface-2);border-radius:0 0 var(--r-xl) var(--r-xl)}
+
+  /* === Login card (modernized) === */
+  .login-card{background:var(--glass-bg-3);backdrop-filter:saturate(180%) blur(24px);-webkit-backdrop-filter:saturate(180%) blur(24px);border:1px solid var(--glass-border);border-radius:var(--r-2xl);box-shadow:var(--shadow-xl);padding:32px 28px;width:min(360px,100%);text-align:center;animation:popIn var(--t-med) var(--ease-spring)}
+  .login-logo{width:auto;height:64px;display:block;margin:0 auto 14px;filter:drop-shadow(0 4px 12px rgba(0,61,121,0.25))}
+  .login-card h3{font-size:18px;font-weight:800;color:var(--text);margin:0 0 4px;letter-spacing:-0.01em}
+  .login-card .sub{font-size:12px;color:var(--text-2);margin:0 0 20px}
+  .login-card input{width:100%;padding:12px 16px;border:1.5px solid var(--border);border-radius:var(--r-md);background:var(--surface-2);color:var(--text);font-size:14px;font-family:inherit;margin-bottom:10px;transition:all var(--t-fast) var(--ease);font-weight:500}
+  .login-card input:focus{outline:none;border-color:var(--brand-primary);background:var(--surface);box-shadow:var(--shadow-glow)}
+  .login-card .err{color:var(--danger);font-size:11px;font-weight:600;min-height:14px;margin-bottom:6px}
+  .btn-login{width:100%;padding:13px;background:linear-gradient(135deg,var(--brand-primary),var(--brand-primary-light));color:#fff;border:none;border-radius:var(--r-md);font-size:14px;font-weight:800;cursor:pointer;box-shadow:0 4px 14px rgba(0,61,121,0.35);transition:all var(--t-fast) var(--ease);letter-spacing:0.01em}
+  .btn-login:hover{transform:translateY(-1px);box-shadow:0 6px 20px rgba(0,61,121,0.45)}
+  .btn-login:active{transform:translateY(0)}
+  .login-card .hint{font-size:10px;color:var(--text-3);margin-top:14px;line-height:1.5;padding:10px;background:var(--surface-2);border-radius:var(--r-sm)}
+
+  /* === Pin-info legacy (keep for backwards compat) === */
+  .pin-info{position:absolute;width:min(320px,calc(100vw - 32px));background:var(--glass-bg-3);backdrop-filter:saturate(180%) blur(20px);-webkit-backdrop-filter:saturate(180%) blur(20px);border:1px solid var(--glass-border);border-radius:var(--r-xl);box-shadow:var(--shadow-lg);padding:16px;z-index:600;display:none;animation:popIn var(--t-med) var(--ease-spring);font-size:12px}
+
+  /* === Theme toggle visual polish === */
+  .theme-toggle{position:relative;width:44px;height:44px;border-radius:var(--r-md);background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.12);color:#fff;cursor:pointer;font-size:16px;display:flex;align-items:center;justify-content:center;transition:all var(--t-fast) var(--ease);backdrop-filter:blur(8px)}
+  .theme-toggle:hover{background:rgba(255,183,0,0.2);border-color:rgba(255,183,0,0.4);transform:translateY(-1px)}
+  .theme-toggle .sun{display:none}
+  [data-theme="dark"] .theme-toggle .sun{display:inline}
+  [data-theme="dark"] .theme-toggle .moon{display:none}
+
+  /* === Background animation (subtle gradient mesh drift) === */
+  @keyframes meshDrift{
+    0%,100%{background-position:0% 0%, 100% 100%}
+    50%{background-position:10% 5%, 90% 95%}
+  }
+  body{animation:meshDrift 30s ease-in-out infinite}
+
+  /* === Map container subtle border on top of new tokens === */
+  #map,.leaflet-container{background:var(--surface-2)}
+
+  /* === Hide legacy dark-mode class — replaced by [data-theme] === */
+  /* (the body.dark-mode selectors above are kept as fallback but won't fire when [data-theme] is set) */
+
+  /* ============================================================
+     MORE MODERN COMPONENTS (Wave 2)
+     ============================================================ */
+
+  /* === Pin hover preview (mini card) === */
+  .pin-preview{position:absolute;width:200px;background:var(--glass-bg-3);backdrop-filter:saturate(180%) blur(20px);-webkit-backdrop-filter:saturate(180%) blur(20px);border:1px solid var(--glass-border);border-radius:var(--r-md);box-shadow:var(--shadow-md);padding:10px;z-index:550;display:none;animation:popIn 0.18s var(--ease-spring);transform-origin:bottom center;pointer-events:none}
+  .pin-preview.show{display:block}
+  .pin-preview-head{display:flex;align-items:center;gap:8px;margin-bottom:4px}
+  .pin-preview-pin{width:24px;height:24px;border-radius:6px;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:10px;color:#fff;flex-shrink:0}
+  .pin-preview-title{flex:1;min-width:0;font-size:11.5px;font-weight:700;color:var(--text);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .pin-preview-cat{font-size:9px;color:var(--brand-primary);font-weight:800;text-transform:uppercase;letter-spacing:0.04em}
+  .pin-preview-loc{font-size:10px;color:var(--text-2);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .pin-preview-hint{font-size:9px;color:var(--text-3);margin-top:6px;padding-top:6px;border-top:1px dashed var(--border);text-align:center}
+
+  /* === Keyboard shortcuts overlay (press ?) === */
+  .kbd-overlay-bg{position:fixed;inset:0;background:rgba(6,13,26,0.5);backdrop-filter:blur(8px);z-index:1500;display:none;align-items:center;justify-content:center;padding:20px;animation:fadeIn var(--t-fast) var(--ease)}
+  .kbd-overlay-bg.show{display:flex}
+  .kbd-overlay{background:var(--glass-bg-3);backdrop-filter:saturate(180%) blur(24px);-webkit-backdrop-filter:saturate(180%) blur(24px);border:1px solid var(--glass-border);border-radius:var(--r-xl);box-shadow:var(--shadow-xl);padding:24px;max-width:520px;width:100%;max-height:80vh;overflow-y:auto;animation:popIn var(--t-med) var(--ease-spring)}
+  .kbd-overlay h2{font-size:18px;font-weight:800;color:var(--text);margin:0 0 6px;letter-spacing:-0.01em;display:flex;align-items:center;gap:10px}
+  .kbd-overlay p.lead{font-size:12px;color:var(--text-2);margin:0 0 18px}
+  .kbd-section{margin-bottom:18px}
+  .kbd-section h3{font-size:10px;font-weight:800;color:var(--text-3);text-transform:uppercase;letter-spacing:0.08em;margin:0 0 8px}
+  .kbd-row{display:flex;align-items:center;justify-content:space-between;padding:6px 0;border-bottom:1px solid var(--border);font-size:12px;color:var(--text-2)}
+  .kbd-row:last-child{border-bottom:none}
+  .kbd-row .label{flex:1}
+  .kbd-row kbd{font-family:inherit;font-size:10px;background:var(--surface-2);color:var(--text);padding:3px 7px;border-radius:var(--r-sm);border:1px solid var(--border);font-weight:700;margin:0 2px;display:inline-block;min-width:18px;text-align:center}
+  .kbd-foot{margin-top:18px;padding-top:14px;border-top:1px solid var(--border);text-align:center;font-size:11px;color:var(--text-3)}
+
+  /* === Welcome tour (onboarding) === */
+  .tour-bg{position:fixed;inset:0;background:rgba(6,13,26,0.7);backdrop-filter:blur(6px);z-index:2000;display:none;animation:fadeIn var(--t-med) var(--ease)}
+  .tour-bg.show{display:block}
+  .tour-spotlight{position:absolute;border-radius:var(--r-md);box-shadow:0 0 0 9999px rgba(6,13,26,0.7),0 0 0 4px var(--brand-accent),0 0 0 8px rgba(255,183,0,0.3);pointer-events:none;transition:all 0.4s var(--ease);z-index:2001}
+  .tour-card{position:absolute;width:min(340px,calc(100vw - 32px));background:var(--glass-bg-3);backdrop-filter:saturate(180%) blur(24px);-webkit-backdrop-filter:saturate(180%) blur(24px);border:1px solid var(--glass-border);border-radius:var(--r-xl);box-shadow:var(--shadow-xl);padding:20px;z-index:2002;animation:popIn var(--t-med) var(--ease-spring);transition:all 0.4s var(--ease)}
+  .tour-card .step-num{font-size:10px;font-weight:800;color:var(--brand-primary);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:6px}
+  .tour-card h3{font-size:16px;font-weight:800;color:var(--text);margin:0 0 6px;letter-spacing:-0.01em}
+  .tour-card p{font-size:12.5px;color:var(--text-2);line-height:1.5;margin:0 0 14px}
+  .tour-card .tour-actions{display:flex;gap:6px;justify-content:space-between;align-items:center}
+  .tour-card .tour-actions .left{display:flex;gap:6px;align-items:center}
+  .tour-card .tour-actions .right{display:flex;gap:6px}
+  .tour-dots{display:flex;gap:4px;align-items:center}
+  .tour-dots .dot{width:6px;height:6px;border-radius:50%;background:var(--border);transition:all var(--t-fast) var(--ease)}
+  .tour-dots .dot.active{background:var(--brand-primary);width:16px;border-radius:3px}
+  .tour-skip{background:transparent;border:none;color:var(--text-3);font-size:11px;cursor:pointer;padding:4px 8px;border-radius:var(--r-sm);font-weight:600}
+  .tour-skip:hover{color:var(--text-2)}
+  .tour-next{background:var(--brand-primary);color:#fff;border:none;padding:8px 16px;border-radius:var(--r-md);font-size:12px;font-weight:800;cursor:pointer;box-shadow:0 2px 8px rgba(0,61,121,0.3);transition:all var(--t-fast) var(--ease)}
+  .tour-next:hover{transform:translateY(-1px);box-shadow:0 4px 14px rgba(0,61,121,0.4)}
+
+  /* === PWA install banner === */
+  .pwa-banner{position:fixed;bottom:calc(16px + env(safe-area-inset-bottom, 0px));left:16px;right:16px;max-width:480px;margin:0 auto;background:var(--glass-bg-3);backdrop-filter:saturate(180%) blur(24px);-webkit-backdrop-filter:saturate(180%) blur(24px);border:1px solid var(--glass-border);border-radius:var(--r-xl);box-shadow:var(--shadow-xl);padding:16px;z-index:800;display:none;animation:popIn var(--t-slow) var(--ease-spring);flex-direction:row;align-items:center;gap:14px}
+  .pwa-banner.show{display:flex}
+  .pwa-banner-icon{width:48px;height:48px;border-radius:var(--r-md);background:linear-gradient(135deg,var(--brand-primary),var(--brand-primary-light));display:flex;align-items:center;justify-content:center;flex-shrink:0;box-shadow:0 4px 14px rgba(0,61,121,0.4);color:#fff;font-size:20px;font-weight:900}
+  .pwa-banner-content{flex:1;min-width:0}
+  .pwa-banner-title{font-size:13px;font-weight:800;color:var(--text);margin:0 0 2px;letter-spacing:-0.01em}
+  .pwa-banner-sub{font-size:11px;color:var(--text-2);line-height:1.4;margin:0}
+  .pwa-banner-actions{display:flex;gap:6px;flex-shrink:0}
+  .pwa-banner-actions button{padding:7px 12px;border-radius:var(--r-md);font-size:11px;font-weight:700;cursor:pointer;border:none;transition:all var(--t-fast) var(--ease)}
+  .pwa-banner-actions .install{background:var(--brand-primary);color:#fff;box-shadow:0 2px 6px rgba(0,61,121,0.3)}
+  .pwa-banner-actions .install:hover{box-shadow:0 4px 12px rgba(0,61,121,0.4);transform:translateY(-1px)}
+  .pwa-banner-actions .dismiss{background:var(--surface-2);color:var(--text-2);border:1px solid var(--border)}
+  .pwa-banner-actions .dismiss:hover{background:var(--surface-3)}
+
+  /* === Floating Action Button (mobile) === */
+  .fab{display:none;position:fixed;bottom:calc(20px + env(safe-area-inset-bottom, 0px));right:20px;width:60px;height:60px;border-radius:50%;background:linear-gradient(135deg,var(--brand-accent-dark),var(--brand-accent));color:var(--brand-primary);border:none;font-size:26px;font-weight:900;cursor:pointer;box-shadow:0 8px 24px rgba(255,183,0,0.5),0 2px 6px rgba(0,0,0,0.2);z-index:600;align-items:center;justify-content:center;transition:all var(--t-med) var(--ease-spring);touch-action:manipulation}
+  .fab:hover{transform:scale(1.08) rotate(90deg);box-shadow:0 12px 32px rgba(255,183,0,0.6)}
+  .fab:active{transform:scale(0.95)}
+  @media(max-width:768px){.fab{display:flex}}
+
+  /* === Bottom sheet (mobile modal replacement) === */
+  @media(max-width:768px){
+    .modal{max-width:100%;width:100%;max-height:92vh;border-radius:24px 24px 0 0;margin-top:auto;animation:sheetUp 0.35s var(--ease-spring);transform-origin:bottom}
+    @keyframes sheetUp{0%{transform:translateY(100%)}100%{transform:translateY(0)}}
+    .modal-head{border-radius:24px 24px 0 0;padding-top:20px}
+    .modal-head::before{content:"";display:block;width:40px;height:4px;background:var(--border);border-radius:2px;margin:0 auto 8px}
+    .modal-body{padding:16px 18px 24px}
+  }
+
+  /* === Cat list scrollable (modern) === */
+  .cat-list-scrollable::-webkit-scrollbar{width:4px}
+  .cat-list-scrollable::-webkit-scrollbar-thumb{background:var(--border-strong);border-radius:2px}
 </style>
 </head>
 <body>
@@ -504,6 +830,7 @@
     </h1>
     <div class="topbar-actions">
       <button class="dark-toggle" id="btn-dark" onclick="toggleDark()" title="Toggle dark mode">🌙</button>
+      <button class="theme-toggle" id="btn-cmdk" onclick="openCmdK()" title="Command palette (⌘K)" style="background:rgba(255,183,0,0.15);border-color:rgba(255,183,0,0.3)">⌘</button>
       <div class="user-badge" id="user-badge" style="display:none"><span class="dot"></span><span id="user-badge-name">user</span></div>
       <button class="btn-logout" id="btn-logout" onclick="doLogout()" style="display:none" title="Logout">⎋</button>
       <button id="btn-sync" onclick="syncPending()" title="Sync pending changes">↻</button>
@@ -522,7 +849,8 @@
   </div>
 
   <div class="main">
-    <button class="toggle-sidebar" onclick="toggleSidebar()" aria-label="Buka sidebar">☰</button>
+    <button class="toggle-sidebar" onclick="toggleSidebar()" aria-label="Buka sidebar" title="Toggle sidebar">☰</button>
+    <button class="toggle-sidebar" onclick="toggleSidebarRail()" aria-label="Collapse sidebar" title="Collapse sidebar" style="left:285px;width:24px;height:48px;border-radius:0 var(--r-md) var(--r-md) 0;font-size:11px;padding:0">‹</button>
     <div class="sidebar-backdrop" id="sidebar-backdrop" onclick="toggleSidebar()"></div>
     <div class="sidebar" id="sidebar">
       <div class="sidebar-head">
@@ -535,6 +863,14 @@
         <button data-tab="empty" onclick="switchTab('empty')">📍 Lokasi Kosong (<span id="empty-count">0</span>)</button>
       </div>
       <div class="sidebar-content" id="sidebar-content"></div>
+      <!-- Sidebar rail (visible only when collapsed) -->
+      <div class="sidebar-rail">
+        <button onclick="switchTab('cat')" title="Kategori">📂</button>
+        <button onclick="switchTab('list')" title="Daftar">📋</button>
+        <button onclick="switchTab('empty')" title="Lokasi Kosong">📍</button>
+        <button onclick="openAddModal()" title="Tambah Pin" style="margin-top:8px;background:var(--brand-accent);color:var(--brand-primary);border-color:var(--brand-accent-dark)">＋</button>
+        <button onclick="openSettings()" title="Settings" style="margin-top:auto">⚙</button>
+      </div>
     </div>
 
     <div class="map-wrap">
@@ -553,6 +889,8 @@
         <button class="zoom-btn" onclick="toggleClickToAdd()" id="btn-place" title="Click to add pin" style="font-size:11px;background:var(--brand-primary);color:#fff;border-color:rgba(0,61,121,0.3)">📍</button>
       </div>
       <div class="pin-info" id="pin-info"></div>
+      <!-- Modern pin info card (glassmorphic) -->
+      <div class="pin-card" id="pin-card" role="dialog" aria-label="Detail pin"></div>
     </div>
   </div>
 
@@ -627,6 +965,91 @@
       </div>
     </div>
   </div>
+
+  <!-- Command Palette (⌘K) -->
+  <div class="cmdk-bg" id="cmdk-bg" onclick="if(event.target===this)closeCmdK()">
+    <div class="cmdk" role="dialog" aria-label="Command palette">
+      <div class="cmdk-input-wrap">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>
+        <input type="text" class="cmdk-input" id="cmdk-input" placeholder="Cari pin, kategori, atau ketik command..." autocomplete="off" spellcheck="false">
+        <kbd class="cmdk-kbd">ESC</kbd>
+      </div>
+      <div class="cmdk-list" id="cmdk-list"></div>
+      <div class="cmdk-foot">
+        <span class="item"><kbd>↑</kbd><kbd>↓</kbd> Navigasi</span>
+        <span class="item"><kbd>↵</kbd> Pilih</span>
+        <span class="item"><kbd>ESC</kbd> Tutup</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Keyboard Shortcuts Overlay (press ?) -->
+  <div class="kbd-overlay-bg" id="kbd-overlay" onclick="if(event.target===this)closeKbdOverlay()">
+    <div class="kbd-overlay" role="dialog" aria-label="Keyboard shortcuts">
+      <h2>⌨️ Pintasan Keyboard</h2>
+      <p class="lead">Jalan lebih cepet pake keyboard. Print/save halaman ini sebagai reference.</p>
+      <div class="kbd-section">
+        <h3>Navigasi</h3>
+        <div class="kbd-row"><span class="label">Buka Command Palette</span><span><kbd>⌘</kbd><kbd>K</kbd></span></div>
+        <div class="kbd-row"><span class="label">Toggle sidebar rail</span><span><kbd>B</kbd></span></div>
+        <div class="kbd-row"><span class="label">Tutup semua overlay</span><span><kbd>ESC</kbd></span></div>
+      </div>
+      <div class="kbd-section">
+        <h3>Aksi Cepat</h3>
+        <div class="kbd-row"><span class="label">Tambah Pin Baru</span><span><kbd>A</kbd> atau <kbd>N</kbd></span></div>
+        <div class="kbd-row"><span class="label">Reload dari server</span><span><kbd>R</kbd></span></div>
+        <div class="kbd-row"><span class="label">Sync pending</span><span><kbd>S</kbd></span></div>
+        <div class="kbd-row"><span class="label">Toggle Dark Mode</span><span><kbd>D</kbd></span></div>
+        <div class="kbd-row"><span class="label">Lokasi saya (GPS)</span><span><kbd>L</kbd></span></div>
+        <div class="kbd-row"><span class="label">Click-to-add pin</span><span><kbd>P</kbd></span></div>
+        <div class="kbd-row"><span class="label">Settings</span><span><kbd>,</kbd></span></div>
+      </div>
+      <div class="kbd-section">
+        <h3>Tampilan</h3>
+        <div class="kbd-row"><span class="label">Show this help</span><span><kbd>?</kbd></span></div>
+        <div class="kbd-row"><span class="label">Close help</span><span><kbd>ESC</kbd></span></div>
+      </div>
+      <div class="kbd-foot">Tekan <kbd>?</kbd> kapan aja untuk buka help ini lagi</div>
+    </div>
+  </div>
+
+  <!-- Welcome Tour (onboarding) -->
+  <div class="tour-bg" id="tour-bg">
+    <div class="tour-spotlight" id="tour-spotlight"></div>
+    <div class="tour-card" id="tour-card">
+      <div class="step-num" id="tour-step">Step 1 of 5</div>
+      <h3 id="tour-title">Selamat datang! 👋</h3>
+      <p id="tour-body">Ayo kita jalan-jalan sebentar — 30 detik biar tau semua fitur keren yang lo punya di Area Mapping A Yani.</p>
+      <div class="tour-actions">
+        <div class="left">
+          <button class="tour-skip" onclick="endTour()">Skip</button>
+          <div class="tour-dots" id="tour-dots"></div>
+        </div>
+        <div class="right">
+          <button class="tour-next" id="tour-next-btn" onclick="nextTourStep()">Lanjut →</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- PWA Install Banner -->
+  <div class="pwa-banner" id="pwa-banner">
+    <div class="pwa-banner-icon">📍</div>
+    <div class="pwa-banner-content">
+      <div class="pwa-banner-title">Install ke home screen</div>
+      <div class="pwa-banner-sub">Akses cepet, jalan offline, feel-nya kayak app beneran</div>
+    </div>
+    <div class="pwa-banner-actions">
+      <button class="dismiss" id="pwa-dismiss">Nanti</button>
+      <button class="install" id="pwa-install">Install</button>
+    </div>
+  </div>
+
+  <!-- Floating Action Button (mobile) -->
+  <button class="fab" id="fab-add" aria-label="Tambah Pin" title="Tambah Pin">＋</button>
+
+  <!-- Pin hover preview (mini card) -->
+  <div class="pin-preview" id="pin-preview"></div>
 
   <!-- Login Modal -->
   <div class="modal-bg" id="loginModal" style="z-index:500">
@@ -704,6 +1127,7 @@
   </div>
 
   <div class="drop-zone" id="drop-zone">📤 Drop file untuk import</div>
+  <div class="toast-stack" id="toast-stack"></div>
 <script>
 const DEFAULT_API = "https://script.google.com/macros/s/AKfycbwho7rx6UIFxNSK90iMq3nMKvyziOJLxHalrIsgbobr1SLrwiqHweQuzkkx3ArsMr4mjg/exec";
 const LS_KEY = 'ayani_map_data_v1';
@@ -743,7 +1167,21 @@ const CAT_COLORS = {
   'Peternakan':'#00897b','Perikanan':'#00897b','ATK':'#5e35b1','Buku':'#5e35b1',
 };
 
-let leafletMap = null, markers = {}, markerCluster = null;
+let leafletMap = null, markers = {}, markerCluster = null, tileLayerRef = null;
+
+// === Theme-aware map tiles (light/dark auto-swap) ===
+function getTileUrl() {
+  const cur = document.documentElement.getAttribute('data-theme');
+  const sysDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+  const isDark = cur === 'dark' || (!cur && sysDark);
+  return isDark
+    ? 'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png'
+    : 'https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png';
+}
+function applyTileTheme() {
+  if (!tileLayerRef || !leafletMap) return;
+  tileLayerRef.setUrl(getTileUrl());
+}
 let state = {
   data:[], pending:[], filtered:[], activeCategory:null, activeProduct:null, activeKota:[], emptySearchQuery:'', emptyAlamatFilter:'',
   searchQuery:'', currentTab:'cat', clickToAddMode:false, editNo:null,
@@ -757,16 +1195,22 @@ document.addEventListener('DOMContentLoaded', () => {
   initMap(); loadFromLocal(); loadSession(); loadDark(); updateUserBadge();
   checkAuth(); loadData(); setupEventListeners(); updateStats();
   updateModeIndicator(); setupDropZone();
+  restoreSidebarRail();
+  // Apply tile theme after init
+  setTimeout(() => { try { applyTileTheme(); } catch(e){} }, 500);
   // V17 ADD: auto-request GPS saat page load (silent, ga auto-pan, cuma catat koordinat + tampilin marker)
   setTimeout(() => { try { requestUserLocation(false); } catch(e) { console.warn('auto GPS request skipped:', e); } }, 800);
   document.getElementById('login-password').addEventListener('keydown', e => { if (e.key === 'Enter') doLogin(); });
   document.getElementById('login-username').addEventListener('keydown', e => { if (e.key === 'Enter') document.getElementById('login-password').focus(); });
   if (!state.session.token) setTimeout(() => showToast('ℹ Login untuk tambah/edit pin', 'info'), 1500);
+  // First-time hint about ⌘K
+  setTimeout(() => showToast('💡 Tekan ⌘K atau Ctrl+K untuk command palette', 'info', { duration: 4500 }), 2500);
 });
 
 function initMap() {
-  leafletMap = L.map('map', {zoomControl:true, preferCanvas:true, worldCopyJump:true, inertia:true, markerZoomAnimation:false}).setView([-6.1751, 106.8272], 11);
-  L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
+  leafletMap = L.map('map', {zoomControl:true, preferCanvas:true, worldCopyJump:true, inertia:true, zoomAnimation:true, fadeAnimation:true, markerZoomAnimation:false}).setView([-6.1751, 106.8272], 11);
+  // Tile layer with theme-aware swap
+  tileLayerRef = L.tileLayer(getTileUrl(), {
     attribution: '&copy; OpenStreetMap &copy; CARTO', subdomains:'abcd', maxZoom:19
   }).addTo(leafletMap);
   leafletMap.on('click', function(e) {
@@ -866,7 +1310,7 @@ if (!document.getElementById('user-loc-style')) {
 }
 
 function setupEventListeners() {
-  // PERF: debounce search input (was re-rendering on every keystroke)
+  // PERF: debounce search input so we don't re-render 200+ pins on every keystroke
   const searchEl = document.getElementById('search');
   let searchTimer = null;
   searchEl.addEventListener('input', e => {
@@ -1056,10 +1500,36 @@ function requireLogin() {
   return true;
 }
 
-const LS_DARK='ayani_dark_v1';
-function loadDark() { try { const on=localStorage.getItem(LS_DARK)==='1'; if (on) document.body.classList.add('dark-mode'); updateDarkBtn(); } catch(e){} }
-function toggleDark() { const on=document.body.classList.toggle('dark-mode'); try{localStorage.setItem(LS_DARK,on?'1':'0');}catch(e){} updateDarkBtn(); showToast(on?'🌙 Dark mode on':'☀️ Light mode','info'); }
-function updateDarkBtn() { const btn=document.getElementById('btn-dark'); if (!btn) return; btn.textContent=document.body.classList.contains('dark-mode')?'☀️':'🌙'; }
+const LS_DARK='ayani_theme_v1';
+function loadDark() {
+  try {
+    const stored = localStorage.getItem(LS_DARK);
+    if (stored === 'dark' || stored === 'light') {
+      document.documentElement.setAttribute('data-theme', stored);
+    }
+    // else: no explicit choice → system preference (handled by CSS media query)
+    updateDarkBtn();
+  } catch(e){}
+}
+function toggleDark() {
+  const cur = document.documentElement.getAttribute('data-theme');
+  const sysDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+  const next = (cur === 'dark' || (!cur && sysDark)) ? 'light' : 'dark';
+  document.documentElement.setAttribute('data-theme', next);
+  try { localStorage.setItem(LS_DARK, next); } catch(e){}
+  updateDarkBtn();
+  applyTileTheme();
+  showToast(next==='dark' ? '🌙 Dark mode' : '☀️ Light mode', 'info');
+}
+function updateDarkBtn() {
+  const btn = document.getElementById('btn-dark');
+  if (!btn) return;
+  const cur = document.documentElement.getAttribute('data-theme');
+  const sysDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+  const isDark = cur === 'dark' || (!cur && sysDark);
+  btn.innerHTML = '<span class="moon">🌙</span><span class="sun">☀️</span>';
+  btn.title = isDark ? 'Switch to light' : 'Switch to dark';
+}
 
 let lightboxPhotos=[], lightboxIndex=0;
 function openLightbox(photosArr,startIdx) { if (!photosArr||!photosArr.length) return; lightboxPhotos=photosArr; lightboxIndex=startIdx||0; renderLightbox(); document.getElementById('lightbox').classList.add('show'); }
@@ -1175,34 +1645,102 @@ function renderSidebar() {
 
   if (state.currentTab==='cat') {
     const cats=getCategories(), total=state.data.length;
-    let html=`<div class="cat-item ${!state.activeCategory&&!state.activeProduct&&(!state.activeKota||state.activeKota.length===0)?'active':''}" onclick="clearFilter()"><div class="cat-color" style="background:linear-gradient(135deg,#e41e3f,#FFB700,#42b72a,#003D79)"></div><div class="cat-name">Semua</div><div class="cat-count">${total}</div></div>`;
-    cats.forEach(([cat,count])=>{
+    const isAllActive = !state.activeCategory && !state.activeProduct && (!state.activeKota||state.activeKota.length===0);
+
+    // === MODERN: Filter chips row (Semua + top categories) ===
+    const topCats = cats.slice(0, 8);
+    const moreCount = Math.max(0, cats.length - topCats.length);
+    let html = `<div class="chip-row" style="padding:8px 8px 4px">
+      <button class="chip ${isAllActive?'active':''}" onclick="clearFilter()" style="animation:chipIn 0.3s var(--ease-spring) backwards">
+        <span>Semua</span><span class="count">${total}</span>
+      </button>
+      ${topCats.map(([cat,count], i) => {
+        const active = state.activeCategory===cat;
+        const color = getCategoryColor(cat);
+        return `<button class="chip ${active?'active':''}" onclick="selectCategory('${escapeAttr(cat)}')" style="animation:chipIn 0.3s var(--ease-spring) ${30 + i*25}ms backwards">
+          <span class="dot" style="background:${color}"></span>
+          <span>${escapeHtml(cat)}</span>
+          <span class="count">${count}</span>
+        </button>`;
+      }).join('')}
+      ${moreCount > 0 ? `<button class="chip" onclick="openCategoryBrowser()" style="animation:chipIn 0.3s var(--ease-spring) ${30 + topCats.length*25}ms backwards"><span>+${moreCount} more</span></button>` : ''}
+    </div>`;
+
+    // === Active filter chips (removable) ===
+    const activeFilters = [];
+    if (state.activeCategory) activeFilters.push({label: state.activeCategory, type: 'category'});
+    if (state.activeProduct) activeFilters.push({label: state.activeProduct, type: 'product'});
+    if (state.activeKota && state.activeKota.length) state.activeKota.forEach(k => activeFilters.push({label: k, type: 'kota'}));
+    if (activeFilters.length > 0) {
+      html += `<div class="chip-row" style="padding:0 8px 4px;gap:4px">
+        <span style="font-size:9px;font-weight:800;color:var(--text-3);text-transform:uppercase;letter-spacing:0.06em;align-self:center;margin-right:4px">Aktif:</span>
+        ${activeFilters.map(f => `<button class="chip active" onclick="removeFilter('${escapeAttr(f.type)}','${escapeAttr(f.label)}')" style="padding:4px 8px;font-size:10px;animation:chipIn 0.2s var(--ease-spring)"><span>${escapeHtml(f.label)}</span><span style="margin-left:2px;opacity:0.7">×</span></button>`).join('')}
+        <button class="chip" onclick="clearFilter()" style="padding:4px 8px;font-size:10px;color:var(--danger)">Clear all</button>
+      </div>`;
+    }
+
+    // === Section: All categories (compact list, scrollable) ===
+    html += `<div style="padding:6px 12px 4px;font-size:10px;font-weight:800;color:var(--text-3);text-transform:uppercase;letter-spacing:0.08em;display:flex;align-items:center;justify-content:space-between">
+      <span>Semua Kategori</span>
+      <span style="color:var(--brand-primary);font-weight:700">${cats.length}</span>
+    </div>`;
+    html += `<div class="cat-list-scrollable" style="max-height:240px;overflow-y:auto;padding:0 6px 6px;scrollbar-width:thin">`;
+    cats.forEach(([cat,count], i) => {
       const active=state.activeCategory===cat?'active':'';
       const color=getCategoryColor(cat);
-      html+=`<div class="cat-item ${active}" onclick="selectCategory('${escapeAttr(cat)}')"><div class="cat-color" style="background:${color}"></div><div class="cat-name">${escapeHtml(cat)}</div><div class="cat-count">${count}</div></div>`;
+      html += `<div class="cat-item ${active}" onclick="selectCategory('${escapeAttr(cat)}')" style="padding:8px 10px;font-size:12.5px;animation:chipIn 0.3s var(--ease-spring) ${i*8}ms backwards">
+        <div class="cat-color" style="background:${color}"></div>
+        <div class="cat-name">${escapeHtml(cat)}</div>
+        <div class="cat-count">${count}</div>
+      </div>`;
     });
+    html += `</div>`;
+
+    // === Mini stats ===
+    const withCoords = state.data.filter(d => d.lng && d.lat).length;
+    const withPhotos = state.data.filter(d => d.photos && d.photos.length > 0).length;
+    const productsCount = getAllProducts().length;
+    const kotasCount = getAllKota().length;
+    html += `<div style="padding:8px;margin:8px;border:1px solid var(--border);border-radius:var(--r-md);background:var(--surface-2);display:grid;grid-template-columns:1fr 1fr;gap:8px;animation:chipIn 0.4s var(--ease-spring) 200ms backwards">
+      <div style="text-align:center"><div style="font-size:18px;font-weight:800;color:var(--brand-primary)">${withCoords}</div><div style="font-size:9px;color:var(--text-3);text-transform:uppercase;letter-spacing:0.04em">With coords</div></div>
+      <div style="text-align:center"><div style="font-size:18px;font-weight:800;color:var(--brand-accent-dark)">${empties.length}</div><div style="font-size:9px;color:var(--text-3);text-transform:uppercase;letter-spacing:0.04em">No coords</div></div>
+      <div style="text-align:center"><div style="font-size:18px;font-weight:800;color:var(--success)">${withPhotos}</div><div style="font-size:9px;color:var(--text-3);text-transform:uppercase;letter-spacing:0.04em">With photos</div></div>
+      <div style="text-align:center"><div style="font-size:18px;font-weight:800;color:var(--info)">${productsCount}</div><div style="font-size:9px;color:var(--text-3);text-transform:uppercase;letter-spacing:0.04em">Products</div></div>
+    </div>`;
+
+    // === Section: Products (if any) ===
     const products=getAllProducts();
     if (products.length>0) {
       const activeProd=state.activeProduct;
-      html+=`<div style="margin:10px 8px 4px;padding:8px 0 4px;border-top:1px solid var(--border);display:flex;align-items:center;gap:6px"><span style="font-size:10px;font-weight:800;color:var(--brand-primary);text-transform:uppercase;letter-spacing:.8px">🛒 Filter by Produk</span>${activeProd?`<span style="font-size:9px;color:var(--brand-primary);background:var(--brand-accent);padding:2px 7px;border-radius:8px;font-weight:700">${escapeHtml(activeProd)}</span>`:''}</div>`;
-      products.forEach(([prod,count])=>{
+      html += `<div style="padding:6px 12px 4px;font-size:10px;font-weight:800;color:var(--text-3);text-transform:uppercase;letter-spacing:0.08em;display:flex;align-items:center;justify-content:space-between;border-top:1px solid var(--border);margin-top:6px;padding-top:10px">
+        <span>🛒 Filter by Produk</span>
+      </div>`;
+      products.slice(0, 6).forEach(([prod,count]) => {
         const active=activeProd===prod?'active':'';
         const hue=Array.from(prod).reduce((h,c)=>((h<<5)-h+c.charCodeAt(0))|0,0)%360;
         const chipColor=`hsl(${Math.abs(hue)},55%,45%)`;
-        html+=`<div class="cat-item ${active}" onclick="selectProduct('${escapeAttr(prod)}')"><div class="cat-color" style="background:${chipColor}"></div><div class="cat-name" style="font-size:12px">${escapeHtml(prod)}</div><div class="cat-count">${count}</div></div>`;
+        html+=`<div class="cat-item ${active}" onclick="selectProduct('${escapeAttr(prod)}')" style="padding:8px 10px;font-size:12px">
+          <div class="cat-color" style="background:${chipColor}"></div>
+          <div class="cat-name">${escapeHtml(prod)}</div>
+          <div class="cat-count">${count}</div>
+        </div>`;
       });
     }
+    // === Section: Kota (multi-select) ===
     const kotas=getAllKota();
     if (kotas.length>0) {
       const activeK=state.activeKota||[];
       const selectedCount=activeK.length;
-      html+=`<div style="margin:10px 8px 4px;padding:8px 0 4px;border-top:1px solid var(--border);display:flex;align-items:center;gap:6px;flex-wrap:wrap"><span style="font-size:10px;font-weight:800;color:var(--brand-primary);text-transform:uppercase;letter-spacing:.8px">📍 Filter by Kota</span>${selectedCount>0?`<span style="font-size:9px;color:#fff;background:var(--brand-primary);padding:2px 7px;border-radius:8px;font-weight:700">${selectedCount} dipilih</span>`:''}<button onclick="event.stopPropagation();selectAllKota()" style="margin-left:auto;background:var(--info-bg);border:1px solid rgba(0,61,121,0.2);color:var(--brand-primary);font-size:9px;font-weight:800;padding:3px 8px;border-radius:8px;cursor:pointer;text-transform:uppercase;letter-spacing:0.4px">${selectedCount===kotas.length?'☐ None':'☑ All'}</button></div>`;
-      kotas.forEach(([kota,count])=>{
+      html += `<div style="padding:6px 12px 4px;font-size:10px;font-weight:800;color:var(--text-3);text-transform:uppercase;letter-spacing:0.08em;display:flex;align-items:center;justify-content:space-between;border-top:1px solid var(--border);margin-top:6px;padding-top:10px">
+        <span>📍 Filter by Kota</span>
+        <button onclick="event.stopPropagation();selectAllKota()" style="background:var(--info-bg);border:1px solid rgba(0,61,121,0.2);color:var(--brand-primary);font-size:9px;font-weight:800;padding:3px 8px;border-radius:8px;cursor:pointer;text-transform:uppercase;letter-spacing:0.4px">${selectedCount===kotas.length?'☐ None':'☑ All'}</button>
+      </div>`;
+      kotas.slice(0, 6).forEach(([kota,count]) => {
         const checked=activeK.includes(kota);
         const hue=Array.from(kota).reduce((h,c)=>((h<<5)-h+c.charCodeAt(0))|0,0)%360;
         const chipColor=`hsl(${Math.abs(hue)+200},60%,50%)`;
         const checkIcon=checked?'<span style="color:var(--brand-primary);font-weight:900;margin-right:5px">✓</span>':'<span style="color:var(--text-3);font-weight:700;margin-right:5px;opacity:0.4">○</span>';
-        html+=`<div class="cat-item ${checked?'active':''}" onclick="selectKota('${escapeAttr(kota)}')" style="${checked?'border-left:3px solid var(--brand-primary);':''}">${checkIcon}<div class="cat-color" style="background:${chipColor}"></div><div class="cat-name" style="font-size:12px">${escapeHtml(kota)}</div><div class="cat-count">${count}</div></div>`;
+        html+=`<div class="cat-item ${checked?'active':''}" onclick="selectKota('${escapeAttr(kota)}')" style="padding:8px 10px;font-size:12px;${checked?'border-left:3px solid var(--brand-primary);':''}">${checkIcon}<div class="cat-color" style="background:${chipColor}"></div><div class="cat-name">${escapeHtml(kota)}</div><div class="cat-count">${count}</div></div>`;
       });
     }
     content.innerHTML=html;
@@ -1241,8 +1779,15 @@ function renderSidebar() {
         <div style="padding:6px 12px;background:var(--warning-bg);border-radius:10px;margin-bottom:8px;font-size:11px;color:#5a4000;font-weight:600;border:1px solid rgba(255,183,0,0.2)" id="empty-counter"></div>
         <div id="empty-list"></div>
       `;
+      // PERF: debounce empty-search input (was re-rendering on every keystroke)
       const el=document.getElementById('empty-search');
-      if(el){ el.addEventListener('input',e=>{ state.emptySearchQuery=e.target.value; renderEmptyList(); }); }
+      if(el){
+        let _t=null;
+        el.addEventListener('input',e=>{
+          clearTimeout(_t);
+          _t=setTimeout(()=>{ state.emptySearchQuery=e.target.value; renderEmptyList(); }, 150);
+        });
+      }
       const alamatSel=document.getElementById('empty-alamat-filter');
       if(alamatSel){ alamatSel.addEventListener('change',e=>{ state.emptyAlamatFilter=e.target.value; renderEmptyList(); }); }
     }
@@ -1258,35 +1803,80 @@ function renderSidebar() {
 function renderMap() {
   if (!leafletMap) return;
   if (markerCluster) leafletMap.removeLayer(markerCluster);
-  // Real cluster group + chunked loading
+  // PERF: real cluster group with chunked loading & animations off
   markerCluster = L.markerClusterGroup({
-    chunkedLoading: true, chunkInterval: 50, chunkDelay: 10,
-    animate: false, animateAddingMarkers: false, spiderfyOnMaxZoom: true,
-    showCoverageOnHover: false, maxClusterRadius: 50
+    chunkedLoading: true,
+    chunkInterval: 50,
+    chunkDelay: 10,
+    animate: false,
+    animateAddingMarkers: false,
+    spiderfyOnMaxZoom: true,
+    showCoverageOnHover: false,
+    maxClusterRadius: 50,
+    // Custom cluster icon (smaller, no jQuery, canvas-friendly)
+    iconCreateFunction: function (cluster) {
+      const count = cluster.getChildCount();
+      const size = count < 10 ? 32 : count < 100 ? 38 : 44;
+      return L.divIcon({
+        html: `<div style="
+          width:${size}px;height:${size}px;
+          background:linear-gradient(135deg,var(--brand-primary),var(--brand-primary-light));
+          color:#fff;border:3px solid var(--brand-accent);
+          border-radius:50%;display:flex;align-items:center;justify-content:center;
+          font-weight:800;font-size:13px;
+          box-shadow:0 4px 12px rgba(0,61,121,0.4);
+        ">${count}</div>`,
+        className: 'custom-cluster-pin',
+        iconSize: [size, size],
+        iconAnchor: [size/2, size/2]
+      });
+    }
   });
+  // ====== V17 PATCH (perf) =====
+  // Build marker layer array, then addLayers in chunks to avoid jank.
+  const layers = [];
   const PIN_RADIUS = 9;
   state.filtered.forEach(d=>{
     if (!d.lng||!d.lat||isNaN(d.lng)||isNaN(d.lat)) return;
     const color = getEffectiveColor(d);
     const dimmed = state.activeCategory && d.kategori!==state.activeCategory;
-    // PERF: circleMarker is canvas-rendered, way faster than L.divIcon
+    // PERF: circleMarker is canvas-rendered, far cheaper than L.divIcon
     const marker = L.circleMarker([d.lat, d.lng], {
       radius: dimmed ? 6 : PIN_RADIUS,
-      color: '#ffffff', weight: 2,
-      fillColor: color, fillOpacity: dimmed ? 0.35 : 1,
+      color: '#ffffff',
+      weight: 2,
+      fillColor: color,
+      fillOpacity: dimmed ? 0.35 : 1,
       draggable: !!(state.session && state.session.token),
+      // Track which pin this marker represents
+      pinNo: d.no,
+      bubblingMouseEvents: false,
       renderer: L.canvas()
     });
+    // Tooltip on hover (only when no dim, otherwise too noisy)
     if (!dimmed) {
-      marker.bindTooltip(`#${d.no} ${d.nama_tempat||''}`.trim(), {direction:'top', offset:[0,-8], className:'pin-tooltip'});
+      marker.bindTooltip(`#${d.no} ${d.nama_tempat||''}`.trim(), {
+        direction: 'top', offset: [0, -8], opacity: 0.95, className: 'pin-tooltip'
+      });
     }
     marker.on('click', (e)=>{
       L.DomEvent.stopPropagation(e);
       if (state.clickToAddMode) return;
       showPinInfo(d.no, e.originalEvent, marker);
     });
-    marker.on('mouseover', function() { if (!dimmed) this.setStyle({radius: PIN_RADIUS+2, weight:3}); });
-    marker.on('mouseout',  function() { if (!dimmed) this.setStyle({radius: PIN_RADIUS, weight:2}); });
+    marker.on('mouseover', function() {
+      if (!dimmed) { this.setStyle({radius: PIN_RADIUS+2, weight:3}); }
+      // Show hover preview (delayed to avoid flicker)
+      const dRef = d;
+      const mRef = marker;
+      clearTimeout(hoverTimer);
+      hoverTimer = setTimeout(() => { try { showPinPreview(dRef, mRef); } catch(e){} }, 350);
+    });
+    marker.on('mouseout',  function() {
+      if (!dimmed) this.setStyle({radius: PIN_RADIUS, weight:2});
+      clearTimeout(hoverTimer);
+      hoverTimer = setTimeout(() => closePinPreview(), 200);
+    });
     marker.on('dragstart', function(e) {
       L.DomEvent.stopPropagation(e);
       document.getElementById('pin-info').classList.remove('show');
@@ -1303,8 +1893,14 @@ function renderMap() {
       updatePinCoords(d.no, newLatLng.lat, newLatLng.lng);
     });
     markers[d.no] = marker;
-    markerCluster.addLayer(marker);
+    layers.push(marker);
   });
+  // Chunked addLayers keeps the main thread responsive for big datasets
+  if (layers.length > 50) {
+    markerCluster.addLayers(layers);
+  } else {
+    layers.forEach(l => markerCluster.addLayer(l));
+  }
   leafletMap.addLayer(markerCluster);
 }
 
@@ -1345,13 +1941,100 @@ function showPinInfo(no,event,markerInstance) {
   info.innerHTML=`<div class="pin-info-head"><div style="width:14px;height:14px;border-radius:50%;background:${effectiveColor};box-shadow:0 0 0 2px #fff,0 2px 6px rgba(0,0,0,0.2)"></div><span>#${item.no} ${escapeHtml(item.nama_tempat)}</span></div><div class="pin-info-cat">${escapeHtml(item.kategori||'Tanpa kategori')}</div><div class="pin-info-loc">${escapeHtml(item.lokasi||'-')}</div><div class="pin-info-loc" style="font-size:10px;color:var(--text-3)">📍 ${item.lat.toFixed(5)}, ${item.lng.toFixed(5)}</div>${produkHtml}${catatanHtml}${photosHtml}${actionsHtml}${pendingTag?`<div style="font-size:10px;margin-top:4px">${pendingTag}</div>`:''}  `;
   if (markerInstance) { const pt=leafletMap.latLngToContainerPoint(markerInstance.getLatLng()); info.style.left=(pt.x+15)+'px'; info.style.top=(pt.y-15)+'px'; }
   info.classList.add('show');
+  // Also render the modern glassmorphic card
+  showPinCard(item, effectiveColor, produkHtml, catatanHtml, photosHtml, actionsHtml, pendingTag, markerInstance);
 }
+
+// === Modern glassmorphic pin card (replaces legacy text popup) ===
+function showPinCard(item, effectiveColor, produkHtml, catatanHtml, photosHtml, actionsHtml, pendingTag, markerInstance) {
+  const card = document.getElementById('pin-card');
+  if (!card) return;
+  const photosArr = Array.isArray(item.photos) ? item.photos : (item.photos ? String(item.photos).split('|').filter(x=>x) : []);
+  const photosBlock = photosArr.length
+    ? `<div class="pin-card-photos">${photosArr.map((fid,i) => `<a href="javascript:void(0)" onclick='openLightbox(${JSON.stringify(photosArr).replace(/'/g,"&#39;")},${i})' style="background-image:url('https://drive.google.com/thumbnail?id=${escapeAttr(fid)}&sz=w200')"></a>`).join('')}</div>`
+    : '';
+  const prods = (item.produk || '').split('|').map(x=>x.trim()).filter(x=>x);
+  const prodsBlock = prods.length
+    ? `<div class="pin-card-prods">${prods.map(p => `<span class="tag">${escapeHtml(p)}</span>`).join('')}</div>`
+    : `<div class="pin-card-prods"><span class="tag none">No products</span></div>`;
+  const catBlock = item.kategori ? `<span class="cat">${escapeHtml(item.kategori)}</span>` : '';
+  const locBlock = item.lokasi ? `<div class="pin-card-loc">📍 ${escapeHtml(item.lokasi)}</div>` : '';
+  const notesBlock = item.catatan ? `<div class="pin-card-notes">${escapeHtml(item.catatan)}</div>` : '';
+  const isLogged = !!(state.session && state.session.token);
+  const actionsBlock = isLogged
+    ? `<div class="pin-card-actions"><button class="btn btn-ghost" onclick="editPin(${item.no});closePinCard();">✏ Edit</button><button class="btn btn-danger" onclick="deletePin(${item.no});closePinCard();">🗑 Hapus</button></div>`
+    : `<div style="font-size:10px;color:var(--text-2);padding:8px 10px;background:var(--surface-2);border-radius:var(--r-sm);text-align:center;font-weight:600">🔒 Login untuk edit/hapus</div>`;
+  card.innerHTML = `
+    <div class="pin-card-head">
+      <div class="pin-card-pin" style="background:${effectiveColor}">#${item.no}</div>
+      <div class="pin-card-title">
+        <h4>${escapeHtml(item.nama_tempat || 'Tanpa nama')}</h4>
+        ${catBlock}
+      </div>
+      <button class="pin-card-close" onclick="closePinCard()" aria-label="Tutup">×</button>
+    </div>
+    ${locBlock}
+    ${prodsBlock}
+    ${notesBlock}
+    ${photosBlock}
+    ${actionsBlock}
+    ${pendingTag ? `<div style="font-size:10px;margin-top:8px;padding:5px 8px;background:var(--warning-bg);color:var(--text-2);border-radius:var(--r-sm);text-align:center">${pendingTag}</div>` : ''}
+  `;
+  // Position the card near the marker
+  if (markerInstance && leafletMap) {
+    const pt = leafletMap.latLngToContainerPoint(markerInstance.getLatLng());
+    const cardW = 320;
+    const cardH = 240; // estimate
+    const mapW = leafletMap.getContainer().clientWidth;
+    const mapH = leafletMap.getContainer().clientHeight;
+    let x = pt.x + 18, y = pt.y - 18;
+    if (x + cardW > mapW - 12) x = pt.x - cardW - 18;
+    if (y + cardH > mapH - 12) y = mapH - cardH - 12;
+    if (y < 12) y = 12;
+    card.style.left = x + 'px';
+    card.style.top = y + 'px';
+  } else {
+    card.style.left = '50%';
+    card.style.top = '50%';
+    card.style.transform = 'translate(-50%, -50%)';
+  }
+  card.classList.add('show');
+}
+function closePinCard() {
+  const card = document.getElementById('pin-card');
+  if (card) card.classList.remove('show');
+  const info = document.getElementById('pin-info');
+  if (info) info.classList.remove('show');
+}
+// Close card on map drag/click
+document.addEventListener('DOMContentLoaded', () => {
+  // delegated — close card when user clicks empty map area
+  setTimeout(() => {
+    if (typeof leafletMap !== 'undefined' && leafletMap) {
+      leafletMap.on('movestart zoomstart click', closePinCard);
+    }
+  }, 1500);
+});
 
 function selectCategory(cat){state.activeCategory=cat;applyFilter();}
 function selectProduct(prod){state.activeProduct=state.activeProduct===prod?null:prod;applyFilter();}
 function selectKota(kota){if(!Array.isArray(state.activeKota))state.activeKota=[];const idx=state.activeKota.indexOf(kota);if(idx>=0)state.activeKota.splice(idx,1);else state.activeKota.push(kota);applyFilter();}
 function selectAllKota(){const kotas=getAllKota().map(k=>k[0]);if(!Array.isArray(state.activeKota))state.activeKota=[];if(state.activeKota.length===kotas.length)state.activeKota=[];else state.activeKota=kotas.slice();applyFilter();}
 function clearFilter(){state.activeCategory=null;state.activeProduct=null;state.activeKota=[];state.searchQuery='';state.emptySearchQuery='';state.emptyAlamatFilter='';document.getElementById('search').value='';applyFilter();}
+function removeFilter(type, value) {
+  if (type === 'category') state.activeCategory = null;
+  else if (type === 'product') state.activeProduct = null;
+  else if (type === 'kota') state.activeKota = (state.activeKota || []).filter(k => k !== value);
+  applyFilter();
+}
+function openCategoryBrowser() {
+  // Open command palette pre-focused to category mode
+  openCmdK();
+  setTimeout(() => {
+    const inp = document.getElementById('cmdk-input');
+    if (inp) { inp.value = ''; cmdkState.query = ''; cmdkState.selectedIdx = 0; renderCmdk(); inp.focus(); }
+  }, 60);
+}
 function switchTab(tab){state.currentTab=tab;if(tab!=='empty')state.emptySearchQuery='';document.querySelectorAll('.sidebar-tabs button').forEach(b=>b.classList.toggle('active',b.dataset.tab===tab));if(tab==='empty'&&state.activeCategory)state.activeCategory=null;renderSidebar();}
 function renderEmptyList() {
   const empties=getPinsWithoutCoords();
@@ -1650,6 +2333,24 @@ function toggleSidebar(){
   if(typeof leafletMap!=='undefined' && leafletMap){setTimeout(()=>leafletMap.invalidateSize(),260);}
 }
 
+// === Modern sidebar rail toggle (icon-only collapsed mode) ===
+function toggleSidebarRail(){
+  const sidebar = document.getElementById('sidebar');
+  if (!sidebar) return;
+  // If on mobile (sidebar is absolutely positioned), use the drawer toggle instead
+  if (window.innerWidth <= 768) { toggleSidebar(); return; }
+  const collapsed = sidebar.classList.toggle('collapsed');
+  try { localStorage.setItem('ayani_sidebar_rail', collapsed ? '1' : '0'); } catch(e){}
+  setTimeout(() => { if (leafletMap) leafletMap.invalidateSize(); }, 260);
+}
+function restoreSidebarRail(){
+  try {
+    if (localStorage.getItem('ayani_sidebar_rail') === '1' && window.innerWidth > 768) {
+      document.getElementById('sidebar').classList.add('collapsed');
+    }
+  } catch(e){}
+}
+
 function updateStats(){
   document.getElementById('stat-total').textContent=state.data.length;
   document.getElementById('stat-shown').textContent=state.filtered.filter(d=>d.lng&&d.lat).length;
@@ -1726,9 +2427,444 @@ function setupDropZone(){
   ['dragleave','drop'].forEach(e=>document.addEventListener(e,ev=>{ev.preventDefault();dz.classList.remove('show');}));
   document.addEventListener('drop',e=>{e.preventDefault();if(e.dataTransfer.files.length){const file=e.dataTransfer.files[0];importFile({target:{files:[file],value:''}});}});
 }
-function showToast(msg,type){const t=document.createElement('div');t.className='toast '+(type||'success');t.textContent=msg;document.body.appendChild(t);setTimeout(()=>{t.style.opacity='0';t.style.transition='opacity .3s';},2500);setTimeout(()=>t.remove(),3000);}
+function showToast(msg, type, opts) {
+  const stack = document.getElementById('toast-stack') || document.body;
+  const t = document.createElement('div');
+  t.className = 'toast ' + (type || 'success');
+  // Allow optional undo button
+  if (opts && opts.undoLabel && typeof opts.onUndo === 'function') {
+    const u = document.createElement('button');
+    u.className = 'undo';
+    u.textContent = opts.undoLabel;
+    u.onclick = () => { try { opts.onUndo(); } catch(e){} t.remove(); };
+    const span = document.createElement('span'); span.textContent = msg;
+    t.appendChild(span); t.appendChild(u);
+  } else {
+    t.textContent = msg;
+  }
+  stack.appendChild(t);
+  const dur = (opts && opts.duration) || 2800;
+  setTimeout(() => { t.style.opacity = '0'; t.style.transition = 'opacity .3s, transform .3s'; t.style.transform = 'translateY(-8px)'; }, dur - 300);
+  setTimeout(() => t.remove(), dur);
+}
 function escapeHtml(s){return String(s||'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
 function escapeAttr(s){return String(s||'').replace(/'/g,'&#39;').replace(/"/g,'&quot;');}
+
+// ====================================================================
+// MODERN FEATURES 2026: Command palette (⌘K), pin card, sidebar rail
+// ====================================================================
+
+// ---- Command Palette ----
+const cmdkState = { open: false, query: '', selectedIdx: 0, items: [] };
+function buildCmdkItems(query) {
+  query = (query||'').toLowerCase().trim();
+  const items = [];
+  // Commands
+  const cmds = [
+    { id:'cmd-add',    icon:'＋', label:'Tambah Pin Baru',    sub:'Buka form tambah', kbd:'A',     act: () => openAddModal() },
+    { id:'cmd-reload', icon:'⟳', label:'Reload dari Server',  sub:'Bypass cache',    kbd:'R',     act: () => forceReload() },
+    { id:'cmd-sync',   icon:'↻', label:'Sync Pending',        sub:'Kirim perubahan', kbd:'S',     act: () => syncPending() },
+    { id:'cmd-dark',   icon:'◐', label:'Toggle Dark Mode',    sub:'Light/dark',      kbd:'D',     act: () => toggleDark() },
+    { id:'cmd-locate', icon:'🎯', label:'Lokasi Saya',         sub:'GPS pinpoint',    kbd:'L',     act: () => requestUserLocation(true) },
+    { id:'cmd-place',  icon:'📍', label:'Click to Add',        sub:'Toggle mode',     kbd:'P',     act: () => toggleClickToAdd() },
+    { id:'cmd-rail',   icon:'⮜', label:'Toggle Sidebar Rail', sub:'Collapse/expand', kbd:'B',     act: () => toggleSidebarRail() },
+    { id:'cmd-export', icon:'📥', label:'Export JSON',         sub:'Download data',                    act: () => exportJSON() },
+    { id:'cmd-csv',    icon:'📊', label:'Export CSV',          sub:'Download data',                    act: () => exportCSV() },
+    { id:'cmd-cfg',    icon:'⚙', label:'Settings',            sub:'API & data',                      act: () => openSettings() },
+  ];
+  cmds.forEach(c => {
+    if (!query || c.label.toLowerCase().includes(query) || c.sub.toLowerCase().includes(query)) {
+      items.push({ ...c, section: 'Commands' });
+    }
+  });
+  // Category filters
+  const cats = getCategories();
+  cats.forEach(([cat, count]) => {
+    if (!query || cat.toLowerCase().includes(query)) {
+      items.push({
+        id: 'cat-' + cat, icon: '📂', label: cat, sub: `${count} pin`, kbd: '',
+        section: 'Kategori', act: () => { selectCategory(cat); switchTab('list'); }
+      });
+    }
+  });
+  // Top pins by name
+  if (query.length >= 1) {
+    const matches = state.data
+      .filter(d => d.nama_tempat && d.nama_tempat.toLowerCase().includes(query))
+      .slice(0, 8);
+    matches.forEach(d => {
+      const color = getEffectiveColor(d);
+      items.push({
+        id: 'pin-' + d.no, icon: '📍', label: d.nama_tempat,
+        sub: `${d.kategori||'-'} • #${d.no}`, kbd: '',
+        color, section: 'Pin',
+        act: () => focusPin(d.no)
+      });
+    });
+  }
+  return items;
+}
+function renderCmdk() {
+  const list = document.getElementById('cmdk-list');
+  if (!list) return;
+  cmdkState.items = buildCmdkItems(cmdkState.query);
+  cmdkState.selectedIdx = Math.min(cmdkState.selectedIdx, Math.max(0, cmdkState.items.length - 1));
+  if (cmdkState.items.length === 0) {
+    list.innerHTML = '<div class="cmdk-empty">🔍 Tidak ada hasil — coba kata kunci lain</div>';
+    return;
+  }
+  let html = '';
+  let lastSection = '';
+  cmdkState.items.forEach((it, i) => {
+    if (it.section !== lastSection) {
+      html += `<div class="cmdk-section">${escapeHtml(it.section)}</div>`;
+      lastSection = it.section;
+    }
+    const sel = i === cmdkState.selectedIdx ? 'selected' : '';
+    const colorDot = it.color ? `<span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:${escapeAttr(it.color)};margin-right:6px;flex-shrink:0"></span>` : '';
+    html += `<div class="cmdk-item ${sel}" data-idx="${i}">
+      <span class="icon">${it.icon}</span>
+      <span class="label">${colorDot}${escapeHtml(it.label)}</span>
+      ${it.sub ? `<span class="sub">${escapeHtml(it.sub)}</span>` : ''}
+      ${it.kbd ? `<span class="kbd">${escapeHtml(it.kbd)}</span>` : ''}
+    </div>`;
+  });
+  list.innerHTML = html;
+  // Click handlers
+  list.querySelectorAll('.cmdk-item').forEach(el => {
+    el.addEventListener('click', () => {
+      const i = parseInt(el.dataset.idx, 10);
+      runCmdk(i);
+    });
+    el.addEventListener('mouseenter', () => {
+      cmdkState.selectedIdx = parseInt(el.dataset.idx, 10);
+      list.querySelectorAll('.cmdk-item').forEach(e => e.classList.remove('selected'));
+      el.classList.add('selected');
+    });
+  });
+}
+function runCmdk(i) {
+  const it = cmdkState.items[i];
+  if (!it) return;
+  closeCmdK();
+  setTimeout(() => { try { it.act(); } catch(e){ console.warn('cmdk action failed', e); } }, 50);
+}
+function openCmdK() {
+  const bg = document.getElementById('cmdk-bg');
+  if (!bg) return;
+  cmdkState.open = true;
+  cmdkState.query = '';
+  cmdkState.selectedIdx = 0;
+  bg.classList.add('show');
+  const input = document.getElementById('cmdk-input');
+  input.value = '';
+  setTimeout(() => input.focus(), 50);
+  renderCmdk();
+}
+function closeCmdK() {
+  const bg = document.getElementById('cmdk-bg');
+  if (!bg) return;
+  cmdkState.open = false;
+  bg.classList.remove('show');
+}
+// Wire up input + global keyboard shortcut
+document.addEventListener('DOMContentLoaded', () => {
+  const input = document.getElementById('cmdk-input');
+  if (input) {
+    let t;
+    input.addEventListener('input', e => {
+      clearTimeout(t);
+      t = setTimeout(() => {
+        cmdkState.query = e.target.value;
+        cmdkState.selectedIdx = 0;
+        renderCmdk();
+      }, 80);
+    });
+  }
+  document.addEventListener('keydown', e => {
+    // Open: ⌘K / Ctrl+K
+    if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'k') {
+      e.preventDefault();
+      if (cmdkState.open) closeCmdK(); else openCmdK();
+      return;
+    }
+    if (!cmdkState.open) return;
+    if (e.key === 'Escape') { e.preventDefault(); closeCmdK(); }
+    else if (e.key === 'ArrowDown') { e.preventDefault(); cmdkState.selectedIdx = Math.min(cmdkState.selectedIdx + 1, cmdkState.items.length - 1); renderCmdk(); }
+    else if (e.key === 'ArrowUp') { e.preventDefault(); cmdkState.selectedIdx = Math.max(cmdkState.selectedIdx - 1, 0); renderCmdk(); }
+    else if (e.key === 'Enter') { e.preventDefault(); runCmdk(cmdkState.selectedIdx); }
+  });
+});
+
+// ====================================================================
+// MORE MODERN FEATURES: keyboard shortcuts, welcome tour, PWA banner, FAB, hover preview
+// ====================================================================
+
+// === Keyboard shortcuts overlay (press ?) ===
+let kbdOverlayOpen = false;
+function openKbdOverlay() {
+  document.getElementById('kbd-overlay').classList.add('show');
+  kbdOverlayOpen = true;
+}
+function closeKbdOverlay() {
+  document.getElementById('kbd-overlay').classList.remove('show');
+  kbdOverlayOpen = false;
+}
+function toggleKbdOverlay() { kbdOverlayOpen ? closeKbdOverlay() : openKbdOverlay(); }
+
+// Global keyboard handler for shortcuts (when no overlay is open)
+document.addEventListener('keydown', e => {
+  // Skip if in input/textarea/contenteditable
+  const tag = (e.target.tagName || '').toLowerCase();
+  const inField = ['input', 'textarea', 'select'].includes(tag) || e.target.isContentEditable;
+  if (inField) return;
+  if (e.metaKey || e.ctrlKey || e.altKey) return;
+  const k = e.key.toLowerCase();
+  // ? shows keyboard shortcuts
+  if (k === '?' || (e.shiftKey && k === '/')) {
+    e.preventDefault();
+    toggleKbdOverlay();
+    return;
+  }
+  // ESC closes any open overlay
+  if (k === 'escape') {
+    if (kbdOverlayOpen) closeKbdOverlay();
+    if (cmdkState.open) closeCmdK();
+    closePinCard();
+    closePinPreview();
+    return;
+  }
+  // Single-letter shortcuts
+  if (kbdOverlayOpen || cmdkState.open) return;
+  switch (k) {
+    case 'a': case 'n': e.preventDefault(); openAddModal(); break;
+    case 'r': e.preventDefault(); forceReload(); break;
+    case 's': e.preventDefault(); syncPending(); break;
+    case 'd': e.preventDefault(); toggleDark(); break;
+    case 'l': e.preventDefault(); requestUserLocation(true); break;
+    case 'p': e.preventDefault(); toggleClickToAdd(); break;
+    case 'b': e.preventDefault(); toggleSidebarRail(); break;
+    case ',': e.preventDefault(); openSettings(); break;
+  }
+});
+
+// === Welcome tour (onboarding) ===
+const tourSteps = [
+  {
+    title: 'Selamat datang! 👋',
+    body: 'Ayo kita jalan-jalan sebentar — 30 detik biar tau semua fitur keren yang lo punya di Area Mapping A Yani.',
+    target: null,
+    cardPos: 'center'
+  },
+  {
+    title: 'Cari & filter cepet 🔍',
+    body: 'Pake search bar di atas atau ⌘K buat command palette. Filter kategori pake chip — klik sekali buat filter, klik lagi buat clear.',
+    target: '#search',
+    cardPos: 'bottom'
+  },
+  {
+    title: 'Glassmorphic pin card ✨',
+    body: 'Klik pin mana aja buat lihat info lengkap: nama, kategori, lokasi, produk, foto, dan catatan. Card-nya follow pin pas lo geser peta.',
+    target: '#map',
+    cardPos: 'center'
+  },
+  {
+    title: 'Dark mode + mobile 📱',
+    body: 'Toggle dark mode pake tombol ☀️/🌙 atau shortcut D. Pas gelap, logo + card tetap kece. Di mobile, sidebar jadi drawer + FAB buat nambah pin cepet.',
+    target: '#btn-dark',
+    cardPos: 'bottom'
+  },
+  {
+    title: 'Install sebagai app 🚀',
+    body: 'Pake dari home screen biar cepet — bisa offline juga. Klik install di banner yang muncul, atau dari browser menu "Add to Home Screen".',
+    target: null,
+    cardPos: 'center'
+  }
+];
+let tourIdx = 0;
+let tourActive = false;
+function startTour() {
+  if (tourActive) return;
+  tourActive = true;
+  tourIdx = 0;
+  document.getElementById('tour-bg').classList.add('show');
+  // Render dots
+  const dots = document.getElementById('tour-dots');
+  dots.innerHTML = tourSteps.map((_, i) => `<div class="dot ${i === 0 ? 'active' : ''}"></div>`).join('');
+  renderTourStep();
+}
+function renderTourStep() {
+  const s = tourSteps[tourIdx];
+  document.getElementById('tour-step').textContent = `Step ${tourIdx + 1} of ${tourSteps.length}`;
+  document.getElementById('tour-title').textContent = s.title;
+  document.getElementById('tour-body').textContent = s.body;
+  document.getElementById('tour-next-btn').textContent = tourIdx === tourSteps.length - 1 ? 'Selesai 🎉' : 'Lanjut →';
+  // Update dots
+  document.querySelectorAll('#tour-dots .dot').forEach((d, i) => d.classList.toggle('active', i === tourIdx));
+  // Position spotlight + card
+  const spot = document.getElementById('tour-spotlight');
+  const card = document.getElementById('tour-card');
+  if (s.target) {
+    const el = document.querySelector(s.target);
+    if (el) {
+      const r = el.getBoundingClientRect();
+      const pad = 8;
+      spot.style.left = (r.left - pad) + 'px';
+      spot.style.top = (r.top - pad) + 'px';
+      spot.style.width = (r.width + pad*2) + 'px';
+      spot.style.height = (r.height + pad*2) + 'px';
+      spot.style.display = 'block';
+      // Card position
+      const cardW = 340;
+      const cardH = 200;
+      let cx = r.left + r.width/2 - cardW/2;
+      let cy = r.bottom + pad + 16;
+      if (s.cardPos === 'center' || cy + cardH > window.innerHeight - 16) {
+        cy = r.top - cardH - 16;
+        if (cy < 16) cy = Math.max(16, (window.innerHeight - cardH) / 2);
+      }
+      cx = Math.max(16, Math.min(cx, window.innerWidth - cardW - 16));
+      card.style.left = cx + 'px';
+      card.style.top = cy + 'px';
+    } else {
+      spot.style.display = 'none';
+      centerCard();
+    }
+  } else {
+    spot.style.display = 'none';
+    centerCard();
+  }
+}
+function centerCard() {
+  const card = document.getElementById('tour-card');
+  card.style.left = '50%';
+  card.style.top = '50%';
+  card.style.transform = 'translate(-50%, -50%)';
+}
+function nextTourStep() {
+  if (tourIdx < tourSteps.length - 1) {
+    tourIdx++;
+    renderTourStep();
+  } else {
+    endTour();
+  }
+}
+function endTour() {
+  tourActive = false;
+  document.getElementById('tour-bg').classList.remove('show');
+  try { localStorage.setItem('ayani_tour_done', '1'); } catch(e){}
+}
+
+// === PWA install banner ===
+let pwaDeferredPrompt = null;
+let pwaBannerShown = false;
+function setupPwaBanner() {
+  // Capture the install prompt
+  window.addEventListener('beforeinstallprompt', (e) => {
+    e.preventDefault();
+    pwaDeferredPrompt = e;
+    // Show banner after 30s if user hasn't dismissed
+    setTimeout(() => {
+      try {
+        if (localStorage.getItem('ayani_pwa_dismissed') === '1') return;
+        if (localStorage.getItem('ayani_tour_done') !== '1') return; // wait for tour first
+      } catch(e){}
+      if (!pwaBannerShown) {
+        document.getElementById('pwa-banner').classList.add('show');
+        pwaBannerShown = true;
+      }
+    }, 30000);
+  });
+  // Track install
+  window.addEventListener('appinstalled', () => {
+    pwaDeferredPrompt = null;
+    document.getElementById('pwa-banner').classList.remove('show');
+    showToast('✅ App terinstall! Cek home screen lo.', 'success');
+  });
+  // Bind buttons
+  const installBtn = document.getElementById('pwa-install');
+  const dismissBtn = document.getElementById('pwa-dismiss');
+  if (installBtn) installBtn.addEventListener('click', async () => {
+    if (!pwaDeferredPrompt) {
+      showToast('Browser lo gak support install prompt. Coba dari menu browser → "Add to Home Screen"', 'info', { duration: 5000 });
+      return;
+    }
+    pwaDeferredPrompt.prompt();
+    const { outcome } = await pwaDeferredPrompt.userChoice;
+    if (outcome === 'accepted') {
+      showToast('🎉 Lagi install...', 'success');
+    }
+    pwaDeferredPrompt = null;
+    document.getElementById('pwa-banner').classList.remove('show');
+  });
+  if (dismissBtn) dismissBtn.addEventListener('click', () => {
+    try { localStorage.setItem('ayani_pwa_dismissed', '1'); } catch(e){}
+    document.getElementById('pwa-banner').classList.remove('show');
+  });
+}
+
+// === Floating Action Button (mobile) ===
+document.addEventListener('DOMContentLoaded', () => {
+  const fab = document.getElementById('fab-add');
+  if (fab) fab.addEventListener('click', () => openAddModal());
+  setupPwaBanner();
+  // Auto-start tour for first-time visitors (after 1s for things to settle)
+  setTimeout(() => {
+    try {
+      if (localStorage.getItem('ayani_tour_done') !== '1') {
+        startTour();
+      }
+    } catch(e){}
+  }, 1200);
+});
+
+// === Pin hover preview (mini card) ===
+let hoverTimer = null;
+function showPinPreview(item, markerInstance) {
+  const card = document.getElementById('pin-preview');
+  if (!card || !markerInstance || !leafletMap) return;
+  const color = getEffectiveColor(item);
+  card.innerHTML = `
+    <div class="pin-preview-head">
+      <div class="pin-preview-pin" style="background:${color}">#${item.no}</div>
+      <div class="pin-preview-title">${escapeHtml(item.nama_tempat || 'Tanpa nama')}</div>
+    </div>
+    ${item.kategori ? `<div class="pin-preview-cat">${escapeHtml(item.kategori)}</div>` : ''}
+    ${item.lokasi ? `<div class="pin-preview-loc">📍 ${escapeHtml(item.lokasi)}</div>` : ''}
+    <div class="pin-preview-hint">Klik untuk detail</div>
+  `;
+  const pt = leafletMap.latLngToContainerPoint(markerInstance.getLatLng());
+  const cardW = 200;
+  const cardH = 100;
+  const mapW = leafletMap.getContainer().clientWidth;
+  const mapH = leafletMap.getContainer().clientHeight;
+  let x = pt.x - cardW/2;
+  let y = pt.y - cardH - 14;
+  if (x < 12) x = 12;
+  if (x + cardW > mapW - 12) x = mapW - cardW - 12;
+  if (y < 12) y = pt.y + 14;
+  card.style.left = x + 'px';
+  card.style.top = y + 'px';
+  card.classList.add('show');
+}
+function closePinPreview() {
+  const card = document.getElementById('pin-preview');
+  if (card) card.classList.remove('show');
+}
+
+// Wire up hover preview on circleMarker
+document.addEventListener('DOMContentLoaded', () => {
+  // Wait for map + renderMap to be ready
+  setTimeout(() => {
+    if (typeof leafletMap === 'undefined' || !leafletMap) return;
+    leafletMap.on('popupopen', closePinPreview);
+  }, 1500);
+});
+
+// Override circleMarker creation in renderMap to add hover preview
+// (We re-hook after renderMap runs by using a MutationObserver-like approach via setInterval)
+// Actually simpler: re-bind by patching the marker creation. We'll add hover handlers in renderMap.
+// (already added in renderMap — this function exposes closePinPreview and showPinPreview for use there)
 </script>
 <script>
   // PWA: register service worker for offline + installability
