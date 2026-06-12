@@ -12,9 +12,6 @@
 <title>Area Mapping - A Yani (Bank Mandiri)</title>
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
-<link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.css"/>
-<link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.Default.css"/>
-<script src="https://unpkg.com/leaflet.markercluster@1.5.3/dist/leaflet.markercluster.js"></script>
 <link rel="manifest" href="/manifest.webmanifest">
 <link rel="icon" type="image/png" href="/assets/icons/logo-icon-square.png">
 <link rel="apple-touch-icon" href="/assets/icons/icon-192.png">
@@ -150,7 +147,7 @@
   .custom-pin > div{box-shadow:0 0 0 3px #fff,0 4px 12px rgba(0,0,0,0.35);font-weight:800;color:#fff;font-size:10px;text-shadow:0 1px 2px rgba(0,0,0,0.5)}
   .pin-dim{opacity:0.2}
   .pin-pending-ring{border:2px dashed var(--brand-accent) !important;animation:spin 2s linear infinite}
-  /* Mini pin tooltip */
+  /* Mini pin tooltip (canvas markers) */
   .pin-tooltip{background:rgba(13,27,46,.96)!important;color:#fff!important;border:none!important;border-radius:8px!important;padding:5px 10px!important;font-size:12px!important;font-weight:600!important;box-shadow:0 4px 14px rgba(0,0,0,.25)!important;white-space:nowrap!important}
   .pin-tooltip::before{border-top-color:rgba(13,27,46,.96)!important}
   @keyframes spin{to{transform:rotate(360deg)}}
@@ -1258,35 +1255,26 @@ function renderSidebar() {
 function renderMap() {
   if (!leafletMap) return;
   if (markerCluster) leafletMap.removeLayer(markerCluster);
-  // Real cluster group + chunked loading
-  markerCluster = L.markerClusterGroup({
-    chunkedLoading: true, chunkInterval: 50, chunkDelay: 10,
-    animate: false, animateAddingMarkers: false, spiderfyOnMaxZoom: true,
-    showCoverageOnHover: false, maxClusterRadius: 50
-  });
-  const PIN_RADIUS = 9;
+  // No clustering — just a layer group with canvas-friendly circle markers
+  markerCluster=L.layerGroup();
+  for (const id in markers) { if (markers[id]) leafletMap.removeLayer(markers[id]); }
+  markers={};
   state.filtered.forEach(d=>{
     if (!d.lng||!d.lat||isNaN(d.lng)||isNaN(d.lat)) return;
-    const color = getEffectiveColor(d);
-    const dimmed = state.activeCategory && d.kategori!==state.activeCategory;
-    // PERF: circleMarker is canvas-rendered, way faster than L.divIcon
-    const marker = L.circleMarker([d.lat, d.lng], {
-      radius: dimmed ? 6 : PIN_RADIUS,
-      color: '#ffffff', weight: 2,
-      fillColor: color, fillOpacity: dimmed ? 0.35 : 1,
-      draggable: !!(state.session && state.session.token),
-      renderer: L.canvas()
+    const color=getEffectiveColor(d);
+    const dimmed=state.activeCategory&&d.kategori!==state.activeCategory?'pin-dim':'';
+    const pendingCls=d._pending?'pin-pending-ring':'';
+    // PERF: circleMarker is canvas-rendered, no DOM nodes per pin
+    const marker=L.circleMarker([d.lat,d.lng],{
+      radius:11, color:'#ffffff', weight:2,
+      fillColor:color, fillOpacity:1,
+      className:`custom-pin ${dimmed} ${pendingCls}`,
+      draggable:true, renderer:L.canvas()
     });
-    if (!dimmed) {
-      marker.bindTooltip(`#${d.no} ${d.nama_tempat||''}`.trim(), {direction:'top', offset:[0,-8], className:'pin-tooltip'});
-    }
-    marker.on('click', (e)=>{
-      L.DomEvent.stopPropagation(e);
-      if (state.clickToAddMode) return;
-      showPinInfo(d.no, e.originalEvent, marker);
-    });
-    marker.on('mouseover', function() { if (!dimmed) this.setStyle({radius: PIN_RADIUS+2, weight:3}); });
-    marker.on('mouseout',  function() { if (!dimmed) this.setStyle({radius: PIN_RADIUS, weight:2}); });
+    marker.bindTooltip(`#${d.no} ${d.nama_tempat||''}`.trim(),{direction:'top',offset:[0,-8],className:'pin-tooltip'});
+    marker.on('click',(e)=>{ L.DomEvent.stopPropagation(e); if(state.clickToAddMode) return; showPinInfo(d.no,e.originalEvent,marker); });
+    marker.on('mouseover',function(){ this.setStyle({radius:13,weight:3}); });
+    marker.on('mouseout',function(){ this.setStyle({radius:11,weight:2}); });
     marker.on('dragstart', function(e) {
       L.DomEvent.stopPropagation(e);
       document.getElementById('pin-info').classList.remove('show');
@@ -1294,7 +1282,7 @@ function renderMap() {
     });
     marker.on('dragend', function(e) {
       L.DomEvent.stopPropagation(e);
-      const newLatLng = e.target.getLatLng();
+      const newLatLng=e.target.getLatLng();
       if (!state.session || !state.session.token) {
         showToast('❌ Login dulu buat pindahin pin', 'error');
         renderMap();
@@ -1302,8 +1290,7 @@ function renderMap() {
       }
       updatePinCoords(d.no, newLatLng.lat, newLatLng.lng);
     });
-    markers[d.no] = marker;
-    markerCluster.addLayer(marker);
+    markers[d.no]=marker; markerCluster.addLayer(marker);
   });
   leafletMap.addLayer(markerCluster);
 }
